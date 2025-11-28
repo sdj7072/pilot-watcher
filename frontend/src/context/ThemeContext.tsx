@@ -9,14 +9,20 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [isDarkMode, setIsDarkMode] = useState(() => {
-        // Check local storage or system preference
+        // 1. Check local storage
         if (typeof window !== 'undefined') {
             try {
                 const saved = localStorage.getItem('theme');
                 if (saved) return saved === 'dark';
             } catch (e) { /* ignore */ }
-            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // 2. Check Time (18:00 ~ 06:00 -> Dark Mode)
+            const hour = new Date().getHours();
+            if (hour >= 18 || hour < 6) {
+                return true;
+            }
         }
+        // 3. Default to Light Mode
         return false;
     });
 

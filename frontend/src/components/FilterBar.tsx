@@ -15,8 +15,8 @@ export default function FilterBar({ searchTerm, setSearchTerm, filter, setFilter
     const filters: FilterType[] = ['ALL', 'ING', 'DONE'];
 
     return (
-        <div className={`mb-6 sticky top-[180px] z-20 pt-2 pb-2 transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-gray-50'}`}>
-            <div className="relative group mb-3">
+        <div className="pt-2 pb-2 transition-colors duration-300">
+            <div className="relative group">
                 <Search className="absolute left-3.5 top-3.5 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
                 <input
                     type="text"
@@ -27,22 +27,7 @@ export default function FilterBar({ searchTerm, setSearchTerm, filter, setFilter
                 />
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                {filters.map((f) => (
-                    <button
-                        key={f}
-                        onClick={() => setFilter(f)}
-                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${filter === f
-                            ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
-                            : isDarkMode
-                                ? 'bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800'
-                                : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
-                            }`}
-                    >
-                        {f === 'ALL' ? '전체' : f === 'ING' ? '진행/예정' : '완료'}
-                    </button>
-                ))}
-            </div>
+
         </div>
     );
 }

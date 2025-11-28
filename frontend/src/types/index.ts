@@ -9,6 +9,8 @@ export interface Ship {
     kind: string;
     side: string;
     agency: string;
+    link?: string;
+    imo?: string;
 }
 
 export interface Tide {

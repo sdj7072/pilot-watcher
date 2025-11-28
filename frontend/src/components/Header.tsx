@@ -7,21 +7,35 @@ interface HeaderProps {
     data: PilotData | null;
     loading: boolean;
     onRefresh: () => void;
+    timeLeft: number;
 }
 
-export default function Header({ data, loading, onRefresh }: HeaderProps) {
+export default function Header({ data, loading, onRefresh, timeLeft }: HeaderProps) {
     const { isDarkMode, toggleTheme } = useTheme();
 
+    const formatDate = (dateStr: string | undefined) => {
+        if (!dateStr) return "데이터 로딩 중...";
+        // "2025-11-28 금요일" -> "2025.11.28(금)"
+        try {
+            const [datePart, dayPart] = dateStr.split(' ');
+            const formattedDate = datePart.replace(/-/g, '.');
+            const shortDay = dayPart ? `(${dayPart[0]})` : '';
+            return `${formattedDate}${shortDay}`;
+        } catch (e) {
+            return dateStr;
+        }
+    };
+
     return (
-        <div className={`text-white p-6 rounded-b-3xl shadow-xl sticky top-0 z-10 transition-colors duration-300 ${isDarkMode ? 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]' : 'bg-gradient-to-br from-blue-600 to-blue-800'}`}>
+        <div className={`text-white p-6 rounded-b-3xl shadow-xl relative z-10 transition-colors duration-300 ${isDarkMode ? 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]' : 'bg-gradient-to-br from-blue-600 to-blue-800'}`}>
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <Ship className="w-7 h-7" />
-                        평택항 도선
+                        <Ship size={28} />
+                        도선 예보 현황
                     </h1>
                     <p className="text-blue-100 text-sm opacity-90 font-medium mt-1">
-                        {data?.dateInfo || "데이터 로딩 중..."}
+                        {formatDate(data?.dateInfo)}
                     </p>
                 </div>
                 <div className="flex gap-2">
@@ -34,21 +48,57 @@ export default function Header({ data, loading, onRefresh }: HeaderProps) {
                     </button>
                     <button
                         onClick={onRefresh}
-                        className="p-2.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
+                        disabled={loading}
+                        className={`p-2.5 rounded-full active:scale-95 transition backdrop-blur-sm flex items-center gap-2 ${loading ? 'bg-blue-500/50 cursor-not-allowed' : 'bg-white/10 hover:bg-white/20'}`}
                         aria-label="Refresh Data"
                     >
                         <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
+                        <span className="text-xs tabular-nums font-medium opacity-80 w-[32px] text-center">
+                            {loading ? "..." : (
+                                <>
+                                    {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
+                                    {(timeLeft % 60).toString().padStart(2, '0')}
+                                </>
+                            )}
+                        </span>
                     </button>
                 </div>
             </div>
 
-            <div className="flex gap-3 text-xs font-semibold bg-black/20 p-3 rounded-xl backdrop-blur-md border border-white/10">
-                <div className="flex items-center gap-1.5 text-yellow-300">
-                    <Sun size={14} /> <span>{data?.sunInfo.split('일몰')[0] || "일출 정보"}</span>
+            {/* Sun/Moon Info */}
+            <div className="flex flex-col gap-2 text-xs font-semibold bg-black/20 p-3 rounded-xl backdrop-blur-md border border-white/10">
+                {/* Row 1: Sunrise / Sunset */}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-yellow-300">
+                        <Sun size={14} />
+                        <span>
+                            {(() => {
+                                const match = data?.sunInfo.match(/일출:\s*(\d{2}:\d{2})/);
+                                return match ? `일출 ${match[1]}` : "일출 --:--";
+                            })()}
+                        </span>
+                    </div>
+                    <div className="w-px bg-white/20 h-3 mx-2"></div>
+                    <div className="flex items-center gap-1.5 text-orange-200">
+                        <Moon size={14} />
+                        <span>
+                            {(() => {
+                                const match = data?.sunInfo.match(/일몰:\s*(\d{2}:\d{2})/);
+                                return match ? `일몰 ${match[1]}` : "일몰 --:--";
+                            })()}
+                        </span>
+                    </div>
                 </div>
-                <div className="w-px bg-white/20 h-4"></div>
-                <div className="flex items-center gap-1.5 text-orange-200">
-                    <Moon size={14} /> <span>{data?.sunInfo.split('일출')[1] || "일몰 정보"}</span>
+
+                {/* Row 2: Night Time */}
+                <div className="flex items-center gap-1.5 text-blue-200 border-t border-white/10 pt-2 mt-0.5">
+                    <Moon size={14} className="text-blue-300" />
+                    <span>
+                        {(() => {
+                            const match = data?.sunInfo.match(/NIGHT TIME\s*:\s*(\d{2}:\d{2}\s*~\s*\d{2}:\d{2})/);
+                            return match ? `Night Time ${match[1]}` : "Night Time --:-- ~ --:--";
+                        })()}
+                    </span>
                 </div>
             </div>
         </div>

@@ -10,7 +10,11 @@ interface ShipListProps {
     isEmpty: boolean;
 }
 
+import { useTheme } from '../context/ThemeContext';
+
 export default function ShipList({ groupedShips, loading, isEmpty }: ShipListProps) {
+    const { isDarkMode } = useTheme();
+
     if (loading && !groupedShips) {
         return (
             <div className="space-y-4">
@@ -34,10 +38,27 @@ export default function ShipList({ groupedShips, loading, isEmpty }: ShipListPro
         <div className="space-y-6 pb-20">
             {groupedShips && Object.keys(groupedShips).sort().map((date) => (
                 <div key={date}>
-                    <div className="flex items-center gap-2 mb-3 px-1">
-                        <Calendar size={16} className="text-gray-400 dark:text-gray-500" />
-                        <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400">{date}</h3>
-                        <div className="h-px bg-gray-200 dark:bg-gray-700 flex-1"></div>
+                    <div
+                        className="sticky top-[115px] z-10 py-3 -mx-4 px-5 flex items-center gap-2 transition-colors duration-300"
+                        style={{ backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}
+                    >
+                        <Calendar size={14} className="text-gray-400 dark:text-gray-500" />
+                        <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400">
+                            {(() => {
+                                try {
+                                    // "11-28" -> "11.28(금)"
+                                    const [month, day] = date.split('-').map(Number);
+                                    const currentYear = new Date().getFullYear();
+                                    const dateObj = new Date(currentYear, month - 1, day);
+                                    const days = ['일', '월', '화', '수', '목', '금', '토'];
+                                    const dayName = days[dateObj.getDay()];
+                                    return `${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')}(${dayName})`;
+                                } catch (e) {
+                                    return date;
+                                }
+                            })()}
+                        </h3>
+                        <div className="h-px bg-gray-200 dark:bg-gray-800 flex-1"></div>
                     </div>
                     <div className="space-y-3">
                         {groupedShips[date].map((ship, idx) => (

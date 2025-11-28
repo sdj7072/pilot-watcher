@@ -11,6 +11,7 @@ export default {
 			"Access-Control-Allow-Origin": "*",
 			"Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
 			"Content-Type": "application/json; charset=utf-8",
+			"Cache-Control": "public, max-age=60",
 		};
 
 		if (request.method === "OPTIONS") {
@@ -144,6 +145,7 @@ export default {
 			});
 
 			// tr을 순회하며 데이터가 있는 행만 골라냄
+			const tempShips: any[] = [];
 			$('tr').each((i, el) => {
 				const tds = $(el).find('td');
 
@@ -165,7 +167,7 @@ export default {
 
 					// 시간이 포맷(00:00)에 맞고, 선명이 있는 경우만 추가
 					if (time.includes(":") && name) {
-						ships.push({
+						tempShips.push({
 							date,
 							time,
 							name,
@@ -180,6 +182,16 @@ export default {
 					}
 				}
 			});
+
+			// VesselFinder 검색 링크 생성 (단순 링크)
+			const shipsWithLinks = tempShips.map((ship) => {
+				return {
+					...ship,
+					link: `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(ship.name)}`
+				};
+			});
+
+			ships.push(...shipsWithLinks);
 
 			const result = {
 				updatedAt: new Date().toISOString(),
