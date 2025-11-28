@@ -7,6 +7,9 @@ Pilot Watcher is a full-stack application designed to monitor and display pilot 
 - **frontend/**: React application built with Vite. Handles the user interface and data visualization.
 - **backend/**: Cloudflare Workers application. Handles data fetching, processing, and API endpoints.
 
+## Live Demo
+[https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)
+
 ## Getting Started
 
 ### Prerequisites
@@ -22,25 +25,28 @@ Pilot Watcher is a full-stack application designed to monitor and display pilot 
     cd pilot-watcher
     ```
 
-2.  Install dependencies for both frontend and backend:
+2.  Install dependencies:
     ```bash
-    cd frontend && npm install
-    cd ../backend && npm install
+    npm install && npm run install:all
     ```
 
 ### Running Locally
 
-**Frontend:**
+You can start both the frontend and backend with a single command:
+
+**Method 1: npm (Recommended)**
 ```bash
-cd frontend
 npm run dev
 ```
 
-**Backend:**
+**Method 2: Shell Script**
 ```bash
-cd backend
-npm run dev
+./dev.sh
 ```
+
+Once started, you can access the application at:
+- **Frontend**: [http://localhost:5173](http://localhost:5173)
+- **Backend**: [http://localhost:8787](http://localhost:8787)
 
 ## Deployment
 
