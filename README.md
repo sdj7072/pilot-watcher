@@ -10,30 +10,27 @@
 ![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare)
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-blue?logo=cloudflare)
 
+<br/>
+
 ## 🔗 Live Demo
-**[https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)**
+### 👉 [https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)
 
 <br/>
 
-<img src="frontend/public/og-image.png" width="100%" alt="Pilot Watcher Banner" style="border-radius: 10px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
+## 📸 Screenshot
+<img src="frontend/public/og-image.png" width="70%" alt="Pilot Watcher Banner" style="border-radius: 10px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
 
 <br/>
+
+## 📘 About
 
 **Real-time Pilot Scheduling & Monitoring System**
 
 Pilot Watcher is a modern, full-stack application designed to monitor and display pilot data for Pyeongtaek Port. It provides real-time tracking of pilot schedules, ship movements, and detailed vessel information with a premium, mobile-first user experience.
 
-## Table of Contents
+<br/>
 
-- [Features](#features)
-- [Data Sources](#data-sources)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Deployment](#deployment)
-- [License](#license)
-
-## Features
+## ✨ Features
 
 - **Real-time Monitoring**: Automatically refreshes pilot data every 60 seconds.
 - **Mobile-First Design**: Optimized layout for smartphones with touch-friendly interactions.
@@ -52,15 +49,9 @@ Pilot Watcher is a modern, full-stack application designed to monitor and displa
     - Clear status badges (Waiting, Onboard, Completed).
     - "Scroll to Top" button for easy navigation.
 
-## Data Sources
+<br/>
 
-This application aggregates data from the following sources:
-
-1.  **Pyeongtaek-Dangjin Port Pilot's Association**: Primary source for pilot schedules and ship movements.
-2.  **VesselFinder**: Secondary source for detailed ship specifications (IMO number, flag, type) linked via search.
-
-
-## Tech Stack
+## 🏗 Tech Stack
 
 - **Frontend**:
     - **Framework**: React 19.2.0
@@ -72,13 +63,16 @@ This application aggregates data from the following sources:
 - **Backend**: Cloudflare Workers (Serverless)
 - **Deployment**: Cloudflare Pages (Frontend) & Workers (Backend)
 
-## Project Structure
+<br/>
+
+## 📁 Project Structure
 
 - **frontend/**: React application. Handles UI, state management, and data visualization.
 - **backend/**: Cloudflare Workers script. Handles data fetching, HTML parsing, and API responses.
 
+<br/>
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -116,7 +110,9 @@ Once started, you can access the application at:
 - **Frontend**: [http://localhost:5173](http://localhost:5173)
 - **Backend**: [http://localhost:8787](http://localhost:8787)
 
-## Deployment
+<br/>
+
+## 🚢 Deployment
 
 ### Frontend (Cloudflare Pages)
 - **Build Command**: `npm run build`
@@ -125,6 +121,8 @@ Once started, you can access the application at:
 ### Backend (Cloudflare Workers)
 - **Deploy Command**: `npm run deploy`
 
-## License
+<br/>
+
+## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
