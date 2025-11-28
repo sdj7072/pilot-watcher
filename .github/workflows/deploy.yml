@@ -31,3 +31,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: 'backend'
+          command: deploy --config wrangler.jsonc

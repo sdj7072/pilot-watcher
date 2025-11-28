@@ -5,6 +5,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "backend",
+	"account_id": "23c29904619ce097e112aece2f6a69b7",
 	"main": "src/index.ts",
 	"compatibility_date": "2025-11-27",
 	"compatibility_flags": [
