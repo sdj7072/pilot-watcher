@@ -1,24 +1,26 @@
-# Pilot Watcher
+<div align="center">
+  <img src="frontend/public/og-image.png" alt="Pilot Watcher Banner" width="100%" height="200" style="object-fit: cover; border-radius: 10px;" />
 
-![Build](https://github.com/sdj7072/pilot-watcher/actions/workflows/deploy.yml/badge.svg)
-![Release](https://img.shields.io/github/v/release/sdj7072/pilot-watcher)
-![License](https://img.shields.io/github/license/sdj7072/pilot-watcher)
-![Stars](https://img.shields.io/github/stars/sdj7072/pilot-watcher?style=social)
+  <h1>Pilot Watcher</h1>
 
-![React](https://img.shields.io/badge/React-19-blue?logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare)
-![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-blue?logo=cloudflare)
+  <p>
+    <!-- Release -->
+    <img src="https://img.shields.io/github/v/release/sdj7072/pilot-watcher" alt="Release" />
+    <!-- License -->
+    <img src="https://img.shields.io/github/license/sdj7072/pilot-watcher" alt="License" />
+    <!-- Build -->
+    <img src="https://github.com/sdj7072/pilot-watcher/actions/workflows/deploy.yml/badge.svg" alt="Build" />
+    <!-- Tech Stack -->
+    <img src="https://img.shields.io/badge/React-19-blue?logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare" alt="Cloudflare Pages" />
+    <img src="https://img.shields.io/badge/Cloudflare-Workers-blue?logo=cloudflare" alt="Cloudflare Workers" />
+  </p>
 
-<br/>
-
-## 🔗 Live Demo
-### 👉 [https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)
-
-<br/>
-
-## 📸 Screenshot
-<img src="frontend/public/og-image.png" width="70%" alt="Pilot Watcher Banner" style="border-radius: 10px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
+  <h3>
+    <a href="https://pilot-watcher.pages.dev">🔗 Live Demo</a>
+  </h3>
+</div>
 
 <br/>
 
