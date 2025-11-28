@@ -3,7 +3,7 @@ import { PilotData } from '../types';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8787';
+const API_URL = import.meta.env.VITE_API_URL || 'https://backend.pilot-watcher.workers.dev';
 
 export function usePilotData() {
     const { data, error, isLoading, mutate } = useSWR<PilotData>(API_URL, fetcher, {
