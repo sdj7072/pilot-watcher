@@ -1,0 +1,48 @@
+import React from 'react';
+import { Search } from 'lucide-react';
+import { FilterType } from '../types';
+import { useTheme } from '../context/ThemeContext';
+
+interface FilterBarProps {
+    searchTerm: string;
+    setSearchTerm: (term: string) => void;
+    filter: FilterType;
+    setFilter: (filter: FilterType) => void;
+}
+
+export default function FilterBar({ searchTerm, setSearchTerm, filter, setFilter }: FilterBarProps) {
+    const { isDarkMode } = useTheme();
+    const filters: FilterType[] = ['ALL', 'ING', 'DONE'];
+
+    return (
+        <div className={`mb-6 sticky top-[180px] z-20 pt-2 pb-2 transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-gray-50'}`}>
+            <div className="relative group mb-3">
+                <Search className="absolute left-3.5 top-3.5 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+                <input
+                    type="text"
+                    value={searchTerm}
+                    placeholder="선박명 또는 대리점 검색..."
+                    className={`w-full pl-11 pr-4 py-3 rounded-xl border-0 shadow-sm ring-1 focus:ring-2 focus:ring-blue-500 transition-all outline-none ${isDarkMode ? 'bg-slate-900 ring-slate-800 text-slate-200 placeholder-slate-500' : 'bg-white ring-gray-200 text-gray-700 placeholder-gray-400'}`}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                {filters.map((f) => (
+                    <button
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${filter === f
+                            ? 'bg-blue-600 text-white shadow-md shadow-blue-200'
+                            : isDarkMode
+                                ? 'bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800'
+                                : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
+                            }`}
+                    >
+                        {f === 'ALL' ? '전체' : f === 'ING' ? '진행/예정' : '완료'}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}

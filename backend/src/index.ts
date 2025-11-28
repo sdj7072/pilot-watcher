@@ -110,38 +110,69 @@ export default {
 			// (5) 선박 리스트 추출 (정밀 분석)
 			const ships: any[] = [];
 
+			// 헤더 인덱스 매핑 (기본값)
+			let colMap: Record<string, number> = {
+				status: 1, pilot: 2, date: 3, time: 4, kind: 5, name: 6,
+				section1: 7, section2: 8, side: 9, tonnage: 10, agency: 11
+			};
+
+			// 테이블 헤더 찾기 시도
+			$('table').each((i, table) => {
+				const headerRow = $(table).find('thead tr').first();
+				if (headerRow.length > 0) {
+					headerRow.find('th, td').each((idx, cell) => {
+						const text = cleanText($(cell).text());
+						if (text.includes("상태")) colMap.status = idx;
+						if (text.includes("도선사")) colMap.pilot = idx;
+						if (text.includes("일자")) colMap.date = idx;
+						if (text.includes("시간")) colMap.time = idx;
+						if (text.includes("긴특")) colMap.kind = idx;
+						if (text.includes("선명")) colMap.name = idx;
+						if (text.includes("도선구간")) {
+							if (!colMap.section1_found) {
+								colMap.section1 = idx;
+								colMap.section1_found = 1;
+							} else {
+								colMap.section2 = idx;
+							}
+						}
+						if (text.includes("접안")) colMap.side = idx;
+						if (text.includes("톤수")) colMap.tonnage = idx;
+						if (text.includes("대리점")) colMap.agency = idx;
+					});
+				}
+			});
+
 			// tr을 순회하며 데이터가 있는 행만 골라냄
 			$('tr').each((i, el) => {
 				const tds = $(el).find('td');
 
 				// 데이터 행은 보통 td가 10개 이상임
-				if (tds.length > 12) {
-					// 인덱스 매핑 (page.html 분석 결과)
-					// 0: 번호, 1: 상태, 2: 도선사, 3: 일자, 4: 시간, 5: 긴특(Kind), 6: 선명
-					// 7: 도선구간1, 8: 도선구간2, 9: 접안(Side), 10: 톤수, 11: 홀수, 12: 대리점 ...
+				if (tds.length > 10) {
+					const getText = (idx: number) => cleanText($(tds[idx]).text());
 
-					const status = cleanText($(tds[1]).text());
-					const pilot = cleanText($(tds[2]).text());
-					const date = cleanText($(tds[3]).text()); // 일자
-					const time = cleanText($(tds[4]).text());
-					const kind = cleanText($(tds[5]).text());
-					const name = cleanText($(tds[6]).text());
-					const section1 = cleanText($(tds[7]).text());
-					const section2 = cleanText($(tds[8]).text());
-					const side = cleanText($(tds[9]).text());
-					const tonnage = cleanText($(tds[10]).text());
-					const agency = cleanText($(tds[11]).text()); // 대리점
+					const status = getText(colMap.status);
+					const pilot = getText(colMap.pilot);
+					const date = getText(colMap.date);
+					const time = getText(colMap.time);
+					const kind = getText(colMap.kind);
+					const name = getText(colMap.name);
+					const section1 = getText(colMap.section1);
+					const section2 = getText(colMap.section2);
+					const side = getText(colMap.side);
+					const tonnage = getText(colMap.tonnage);
+					const agency = getText(colMap.agency);
 
 					// 시간이 포맷(00:00)에 맞고, 선명이 있는 경우만 추가
-					if (time.includes(":")) {
+					if (time.includes(":") && name) {
 						ships.push({
 							date,
 							time,
 							name,
 							status,
 							pilot,
-							sections: [section1, section2].filter(s => s), // 빈 값 제거
-							type: tonnage, // 기존 호환성 유지 (톤수)
+							sections: [section1, section2].filter(s => s),
+							type: tonnage,
 							kind,
 							side,
 							agency
