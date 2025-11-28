@@ -57,16 +57,10 @@ export default function ShipCard({ ship }: ShipCardProps) {
         <div className="flex flex-col gap-0.5">
           <span className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
             {ship.type}
-            {ship.agency && (
-              <span className={`truncate max-w-[80px] ${isDarkMode ? 'text-slate-500' : 'text-gray-400'}`} title={ship.agency}>
-                {' '}| {ship.agency}
-              </span>
-            )}
-
           </span>
         </div>
-        <div className={`font-bold px-2 py-1 rounded ${isDarkMode ? 'bg-blue-900/30 text-blue-300' : 'bg-blue-50 text-blue-700'}`}>
-          <span className={isDarkMode ? 'text-blue-400' : 'text-blue-600'}>{ship.pilot}</span>
+        <div className={`font-bold ${isDarkMode ? 'text-slate-100' : 'text-gray-800'}`}>
+          {ship.agency}
         </div>
       </div>
     </div>

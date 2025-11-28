@@ -1,36 +1,31 @@
+# Pilot Watcher
+
 <div align="center">
-  <img src="frontend/public/og-image.png" alt="Pilot Watcher Banner" width="100%" height="200" style="object-fit: cover; border-radius: 10px;" />
 
-  <h1>Pilot Watcher</h1>
-
-  <p>
-    <!-- Release -->
+<p>
     <img src="https://img.shields.io/github/v/release/sdj7072/pilot-watcher" alt="Release" />
-    <!-- License -->
     <img src="https://img.shields.io/github/license/sdj7072/pilot-watcher" alt="License" />
-    <!-- Build -->
     <img src="https://github.com/sdj7072/pilot-watcher/actions/workflows/deploy.yml/badge.svg" alt="Build" />
-    <!-- Tech Stack -->
+    <br/>
     <img src="https://img.shields.io/badge/React-19-blue?logo=react" alt="React" />
     <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript" />
     <img src="https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare" alt="Cloudflare Pages" />
     <img src="https://img.shields.io/badge/Cloudflare-Workers-blue?logo=cloudflare" alt="Cloudflare Workers" />
-  </p>
+</p>
 
-  <h3>
-    <a href="https://pilot-watcher.pages.dev">🔗 Live Demo</a>
-  </h3>
+<h3>Real-time Pilot Scheduling & Monitoring System</h3>
+<p>Pilot Watcher is a modern, full-stack application designed to monitor and display pilot data for Pyeongtaek Port.</p>
+
+<br/>
+
+## 🔗 Live Demo
+### 👉 [https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)
+
 </div>
 
 <br/>
 
-## 📘 About
 
-**Real-time Pilot Scheduling & Monitoring System**
-
-Pilot Watcher is a modern, full-stack application designed to monitor and display pilot data for Pyeongtaek Port. It provides real-time tracking of pilot schedules, ship movements, and detailed vessel information with a premium, mobile-first user experience.
-
-<br/>
 
 ## ✨ Features
 
@@ -67,7 +62,7 @@ Pilot Watcher is a modern, full-stack application designed to monitor and displa
 
 <br/>
 
-## 📁 Project Structure
+## 📁 Architecture / Structure
 
 - **frontend/**: React application. Handles UI, state management, and data visualization.
 - **backend/**: Cloudflare Workers script. Handles data fetching, HTML parsing, and API responses.
