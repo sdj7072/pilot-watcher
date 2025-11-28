@@ -10,6 +10,15 @@
 ![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare)
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-blue?logo=cloudflare)
 
+## 🔗 Live Demo
+**[https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)**
+
+<br/>
+
+<img src="frontend/public/og-image.png" width="100%" alt="Pilot Watcher Banner" style="border-radius: 10px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);" />
+
+<br/>
+
 **Real-time Pilot Scheduling & Monitoring System**
 
 Pilot Watcher is a modern, full-stack application designed to monitor and display pilot data for Pyeongtaek Port. It provides real-time tracking of pilot schedules, ship movements, and detailed vessel information with a premium, mobile-first user experience.
@@ -68,8 +77,6 @@ This application aggregates data from the following sources:
 - **frontend/**: React application. Handles UI, state management, and data visualization.
 - **backend/**: Cloudflare Workers script. Handles data fetching, HTML parsing, and API responses.
 
-## Live Demo
-[https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)
 
 ## Getting Started
 
