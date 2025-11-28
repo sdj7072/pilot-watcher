@@ -1,9 +1,43 @@
 import * as cheerio from 'cheerio';
-
+import { z } from 'zod';
 
 export interface Env {
 	PILOT_KV: KVNamespace;
 }
+
+// Zod Schema Definition
+const ShipSchema = z.object({
+	date: z.string(),
+	time: z.string(),
+	name: z.string(),
+	status: z.string(),
+	pilot: z.string(),
+	sections: z.array(z.string()),
+	type: z.string(),
+	kind: z.string(),
+	side: z.string(),
+	agency: z.string(),
+	link: z.string().optional(),
+});
+
+const TideSchema = z.object({
+	time: z.string(),
+	height: z.string(),
+	current: z.string(),
+	maxTime: z.string(),
+	maxCurrent: z.string(),
+});
+
+const PilotDataSchema = z.object({
+	updatedAt: z.string(),
+	dateInfo: z.string(),
+	sunInfo: z.string(),
+	pilots: z.array(z.string()),
+	tides: z.array(TideSchema),
+	ships: z.array(ShipSchema),
+});
+
+type PilotData = z.infer<typeof PilotDataSchema>;
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
@@ -18,71 +52,86 @@ export default {
 			return new Response(null, { headers: corsHeaders });
 		}
 
-		// 1. 캐시 확인
-		const cacheKey = "pilot-data-v2"; // 키 버전 변경
+		const cacheKey = "pilot-data-v2";
 		const url = new URL(request.url);
 		const isRefresh = url.searchParams.get('refresh');
 
-		if (!isRefresh) {
-			try {
-				const cachedData = await env.PILOT_KV.get(cacheKey);
-				if (cachedData) {
-					return new Response(cachedData, { headers: corsHeaders });
-				}
-			} catch (e) { }
+		let cachedData: PilotData | null = null;
+
+		// 1. Try to get cached data first (Stale-while-revalidate)
+		try {
+			const rawCache = await env.PILOT_KV.get(cacheKey);
+			if (rawCache) {
+				cachedData = JSON.parse(rawCache);
+			}
+		} catch (e) {
+			console.error("Cache read error:", e);
+		}
+
+		// If not forcing refresh and we have cache, return it immediately (if fresh enough? No, we return stale and revalidate in background if needed, but here we just return cache if exists and let client handle revalidation via SWR, OR we fetch fresh if cache is missing/refresh requested)
+		// Actually, for a simple implementation:
+		// - If refresh=true: Fetch fresh, update cache, return fresh.
+		// - If refresh=false:
+		//   - If cache exists: Return cache.
+		//   - If cache missing: Fetch fresh, update cache, return fresh.
+
+		// But to be more resilient (Stale-while-revalidate on server side is tricky without background workers).
+		// Better approach for "Resilience":
+		// Try to fetch fresh data.
+		// If fetch succeeds -> Update cache -> Return fresh.
+		// If fetch fails ->
+		//    If cache exists -> Return cache (Stale) with a warning header?
+		//    If cache missing -> Return Error.
+
+		if (!isRefresh && cachedData) {
+			return new Response(JSON.stringify(cachedData), { headers: corsHeaders });
 		}
 
 		try {
-			// 2. 원본 사이트 가져오기
+			// 2. Fetch from Source
 			const targetUrl = 'http://www.ptpilot.co.kr/forecast/1';
 			const response = await fetch(targetUrl);
 
-			// 데이터를 '생'으로 가져와서 iconv로 해독 -> UTF-8이므로 text() 사용
+			if (!response.ok) throw new Error(`Source responded with ${response.status}`);
+
 			const html = await response.text();
 
-			// 3. HTML 파싱
+			// 3. Parse HTML
 			const $ = cheerio.load(html);
-
-			// 텍스트 정제 헬퍼 함수
 			const cleanText = (text: string) => text.replace(/\s+/g, ' ').trim();
 
-			// (1) 날짜 정보 추출
+			// ... (Parsing logic remains mostly same, just ensuring types) ...
+
+			// (1) Date Info
 			let dateInfo = "날짜 정보 없음";
 			$('td').each((i, el) => {
 				const text = cleanText($(el).text());
-				// "2025-11-27 목요일" 같은 패턴 찾기
 				if (text.match(/\d{4}-\d{2}-\d{2}/) && text.includes('요일')) {
 					dateInfo = text;
 				}
 			});
 
-			// (2) 일출/일몰 추출
+			// (2) Sun Info
 			const sunInfo = cleanText($('td:contains("일출")').text()) || "정보 없음";
 
-			// (3) 당직 도선사 추출
+			// (3) Pilots
 			const pilots: string[] = [];
 			$('tr').each((i, el) => {
 				const text = $(el).text();
 				if (text.includes("1대기") && text.includes("2대기")) {
-					// 불필요한 공백과 탭 제거 후 깔끔하게 정리
 					const cleanLines = text.replace(/\t/g, '').split('\n').map(t => cleanText(t)).filter(t => t.length > 1);
 					pilots.push(...cleanLines);
 				}
 			});
 
-			// (4) 조석 정보 추출
+			// (4) Tides
 			const tides: any[] = [];
 			$('table').each((i, table) => {
-				// 조석 정보가 있는 테이블만 타겟팅
 				if ($(table).text().includes("조석시간") && $(table).text().includes("조석조고")) {
-					// 중첩 테이블 문제 방지를 위해 직계 자식 tr만 순회
 					const rows = $(table).find('> tbody > tr, > tr');
-
 					rows.each((j, row) => {
 						const tds = $(row).find('td');
 						const firstCol = cleanText($(tds[0]).text());
-
-						// 헤더 행이거나, 시간 정보가 있는 데이터 행인 경우 추출
 						if (tds.length >= 10 && (firstCol === "조석시간" || firstCol.match(/\d{2}:\d{2}/))) {
 							tides.push({
 								time: firstCol,
@@ -91,8 +140,6 @@ export default {
 								maxTime: cleanText($(tds[3]).text()),
 								maxCurrent: cleanText($(tds[4]).text())
 							});
-
-							// 오후 조석 정보 (데이터 행인 경우에만 존재)
 							const sixthCol = cleanText($(tds[5]).text());
 							if (sixthCol === "조석시각" || sixthCol.match(/\d{2}:\d{2}/)) {
 								tides.push({
@@ -108,16 +155,13 @@ export default {
 				}
 			});
 
-			// (5) 선박 리스트 추출 (정밀 분석)
+			// (5) Ships
 			const ships: any[] = [];
-
-			// 헤더 인덱스 매핑 (기본값)
 			let colMap: Record<string, number> = {
 				status: 1, pilot: 2, date: 3, time: 4, kind: 5, name: 6,
 				section1: 7, section2: 8, side: 9, tonnage: 10, agency: 11
 			};
 
-			// 테이블 헤더 찾기 시도
 			$('table').each((i, table) => {
 				const headerRow = $(table).find('thead tr').first();
 				if (headerRow.length > 0) {
@@ -144,15 +188,10 @@ export default {
 				}
 			});
 
-			// tr을 순회하며 데이터가 있는 행만 골라냄
-			const tempShips: any[] = [];
 			$('tr').each((i, el) => {
 				const tds = $(el).find('td');
-
-				// 데이터 행은 보통 td가 10개 이상임
 				if (tds.length > 10) {
 					const getText = (idx: number) => cleanText($(tds[idx]).text());
-
 					const status = getText(colMap.status);
 					const pilot = getText(colMap.pilot);
 					const date = getText(colMap.date);
@@ -165,33 +204,16 @@ export default {
 					const tonnage = getText(colMap.tonnage);
 					const agency = getText(colMap.agency);
 
-					// 시간이 포맷(00:00)에 맞고, 선명이 있는 경우만 추가
 					if (time.includes(":") && name) {
-						tempShips.push({
-							date,
-							time,
-							name,
-							status,
-							pilot,
+						ships.push({
+							date, time, name, status, pilot,
 							sections: [section1, section2].filter(s => s),
-							type: tonnage,
-							kind,
-							side,
-							agency
+							type: tonnage, kind, side, agency,
+							link: `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(name)}`
 						});
 					}
 				}
 			});
-
-			// VesselFinder 검색 링크 생성 (단순 링크)
-			const shipsWithLinks = tempShips.map((ship) => {
-				return {
-					...ship,
-					link: `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(ship.name)}`
-				};
-			});
-
-			ships.push(...shipsWithLinks);
 
 			const result = {
 				updatedAt: new Date().toISOString(),
@@ -202,14 +224,25 @@ export default {
 				ships
 			};
 
-			// KV 저장
+			// 4. Validate with Zod
+			const validatedResult = PilotDataSchema.parse(result);
+
+			// 5. Update Cache
 			if (env.PILOT_KV) {
-				await env.PILOT_KV.put(cacheKey, JSON.stringify(result), { expirationTtl: 600 });
+				await env.PILOT_KV.put(cacheKey, JSON.stringify(validatedResult), { expirationTtl: 600 });
 			}
 
-			return new Response(JSON.stringify(result), { headers: corsHeaders });
+			return new Response(JSON.stringify(validatedResult), { headers: corsHeaders });
 
 		} catch (error: any) {
+			console.error("Fetch/Parse Error:", error);
+
+			// Fallback: Return cached data if available (even if stale)
+			if (cachedData) {
+				const staleHeaders = { ...corsHeaders, "X-Pilot-Data-Stale": "true" };
+				return new Response(JSON.stringify(cachedData), { headers: staleHeaders });
+			}
+
 			return new Response(JSON.stringify({ error: error.message, stack: error.stack }), {
 				status: 500,
 				headers: corsHeaders

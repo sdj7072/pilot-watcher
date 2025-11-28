@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.3.0] - 2025-11-28
+
+### Advanced Optimizations
+- **Backend Resilience**:
+    - Implemented **Stale-while-revalidate** strategy to serve cached data during upstream failures.
+    - Added **Zod** schema validation to ensure data integrity.
+- **UX Polish**:
+    - Integrated **Sonner** for elegant Toast notifications (success/error feedback).
+    - Improved **Skeleton UI** to match the actual card layout for smoother loading.
+- **SEO**:
+    - Added `robots.txt` and `sitemap.xml` for better search engine indexing.
+- **DevOps**:
+    - Configured **Husky** and **Lint-staged** to enforce code quality checks on commit.
+- **Documentation**:
+    - Added project badges (Build, Release, License, Tech Stack) to README.
+
 ## [2.2.0] - 2025-11-28
 
 ### Optimization & Refactoring

@@ -7,6 +7,7 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { FilterType } from './types';
 import { usePilotData } from './hooks/usePilotData';
 import { useShipFilter } from './hooks/useShipFilter';
+import { Toaster, toast } from 'sonner';
 
 function AppContent() {
     const { data, isLoading, isError, mutate } = usePilotData();
@@ -28,8 +29,23 @@ function AppContent() {
         return () => clearInterval(timer);
     }, []);
 
+    // Error Notification
+    useEffect(() => {
+        if (isError) {
+            toast.error('데이터를 불러오지 못했습니다.', {
+                description: '잠시 후 다시 시도해주세요.',
+                action: {
+                    label: '재시도',
+                    onClick: () => mutate(),
+                },
+            });
+        }
+    }, [isError, mutate]);
+
     const handleManualRefresh = () => {
-        mutate(); // Trigger SWR revalidation
+        mutate().then(() => {
+            toast.success('데이터가 갱신되었습니다.', { duration: 2000 });
+        });
         setTimeLeft(60);
     };
 
@@ -80,6 +96,9 @@ function AppContent() {
 
     return (
         <div className={`min-h-screen pb-10 select-none font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-white'}`}>
+            {/* Toaster for Notifications */}
+            <Toaster position="top-center" richColors closeButton />
+
             <Header
                 data={data || null}
                 loading={isLoading}
@@ -111,23 +130,11 @@ function AppContent() {
                     </div>
                 </div>
 
-                {isError ? (
-                    <div className="text-center py-10 text-red-500 dark:text-red-400">
-                        <p>데이터를 불러오지 못했습니다.</p>
-                        <button
-                            onClick={handleManualRefresh}
-                            className="mt-4 px-4 py-2 bg-red-100 dark:bg-red-900/30 rounded-lg text-sm font-bold hover:bg-red-200 dark:hover:bg-red-900/50 transition"
-                        >
-                            다시 시도
-                        </button>
-                    </div>
-                ) : (
-                    <ShipList
-                        groupedShips={groupedShips}
-                        loading={isLoading && !data}
-                        isEmpty={!filteredShips || filteredShips.length === 0}
-                    />
-                )}
+                <ShipList
+                    groupedShips={groupedShips}
+                    loading={isLoading && !data}
+                    isEmpty={!filteredShips || filteredShips.length === 0}
+                />
             </div>
 
             {/* Scroll to Top Button */}

@@ -1,5 +1,15 @@
 # Pilot Watcher
 
+![Build](https://github.com/sdj7072/pilot-watcher/actions/workflows/deploy.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/sdj7072/pilot-watcher)
+![License](https://img.shields.io/github/license/sdj7072/pilot-watcher)
+![Stars](https://img.shields.io/github/stars/sdj7072/pilot-watcher?style=social)
+
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare-Pages-orange?logo=cloudflare)
+![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-blue?logo=cloudflare)
+
 **Real-time Pilot Scheduling & Monitoring System**
 
 Pilot Watcher is a modern, full-stack application designed to monitor and display pilot data for Pyeongtaek Port. It provides real-time tracking of pilot schedules, ship movements, and detailed vessel information with a premium, mobile-first user experience.
