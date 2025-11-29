@@ -65,6 +65,6 @@ describe('App Component', () => {
     it('renders without crashing', () => {
         render(<App />);
         // Check if Header is rendered (it contains "도선 예보")
-        expect(screen.getByText(/도선 예보/i)).toBeDefined();
+        expect(screen.getByText(/평택항 도선 현황/i)).toBeDefined();
     });
 });
