@@ -8,6 +8,29 @@ import { FilterType, PilotData } from './types';
 import { usePilotData } from './hooks/usePilotData';
 import { useShipFilter } from './hooks/useShipFilter';
 import { Toaster, toast } from 'sonner';
+import { AlertCircle, RefreshCw } from 'lucide-react';
+
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center animate-in fade-in zoom-in duration-300">
+        <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-full mb-4 shadow-sm">
+            <AlertCircle className="w-12 h-12 text-red-500 dark:text-red-400" />
+        </div>
+        <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+            데이터를 불러오지 못했습니다
+        </h3>
+        <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-xs leading-relaxed">
+            일시적인 오류일 수 있습니다.<br />잠시 후 다시 시도해주세요.
+        </p>
+        <button
+            onClick={onRetry}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20"
+        >
+            <RefreshCw className="w-5 h-5" />
+            다시 시도하기
+        </button>
+    </div>
+);
+
 function AppContent() {
     const { data: fetchedData, isLoading, isError, mutate, isValidating } = usePilotData();
     const [displayedData, setDisplayedData] = useState<PilotData | null>(null);
@@ -38,25 +61,21 @@ function AppContent() {
         return () => clearInterval(timer);
     }, []);
 
-    // Error Notification
+    // Error Notification (Toast) - Keep this for background refresh errors
     useEffect(() => {
-        if (isError) {
-            toast.error('데이터를 불러오지 못했습니다.', {
-                description: '잠시 후 다시 시도해주세요.',
-                action: {
-                    label: '재시도',
-                    onClick: () => mutate(),
-                },
+        if (isError && displayedData) {
+            toast.error('데이터 갱신 실패', {
+                description: '기존 데이터를 유지합니다.',
             });
         }
-    }, [isError, mutate]);
+    }, [isError, displayedData]);
 
     const handleManualRefresh = () => {
         mutate().then((newData) => {
             if (newData) {
                 setDisplayedData(newData);
+                toast.success('데이터가 갱신되었습니다.', { duration: 2000 });
             }
-            toast.success('데이터가 갱신되었습니다.', { duration: 2000 });
         });
         setTimeLeft(60);
     };
@@ -106,6 +125,9 @@ function AppContent() {
 
     const { isDarkMode } = useTheme();
 
+    // Show Error State only if we have NO data and there is an error
+    const showFullScreenError = isError && !displayedData;
+
     return (
         <div className={`min-h-screen pb-10 select-none font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-white'}`}>
             {/* Toaster for Notifications */}
@@ -120,33 +142,41 @@ function AppContent() {
 
             <div className={`max-w-md mx-auto px-4 -mt-6 relative z-0 transition-opacity duration-300 ${isLoading && !displayedData ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
 
-                {/* Sentinel for Sticky Detection - Placed at the top of content to trigger exactly when it hits viewport top */}
-                <div ref={sentinelRef} className="absolute top-0 h-px w-full pointer-events-none bg-transparent" />
-
-                {/* Sticky Wrapper */}
-                <div className="sticky top-0 z-30 bg-transparent">
-                    <PilotDuty
-                        pilots={displayedData?.pilots}
-                        isStuck={isSticky}
-                        onRefresh={handleManualRefresh}
-                        loading={isLoading}
-                        timeLeft={timeLeft}
-                    />
-                    <div className={`${isSticky ? 'bg-blue-600 shadow-md rounded-b-xl -mx-4 px-4 pb-2 pt-0' : 'mb-2'} transition-all duration-300`}>
-                        <FilterBar
-                            searchTerm={searchTerm}
-                            setSearchTerm={setSearchTerm}
-                            filter={statusFilter as FilterType}
-                            setFilter={(val) => setStatusFilter(val)}
-                        />
+                {showFullScreenError ? (
+                    <div className="mt-10">
+                        <ErrorState onRetry={handleManualRefresh} />
                     </div>
-                </div>
+                ) : (
+                    <>
+                        {/* Sentinel for Sticky Detection - Placed at the top of content to trigger exactly when it hits viewport top */}
+                        <div ref={sentinelRef} className="absolute top-0 h-px w-full pointer-events-none bg-transparent" />
 
-                <ShipList
-                    groupedShips={groupedShips}
-                    loading={isLoading && !displayedData}
-                    isEmpty={!filteredShips || filteredShips.length === 0}
-                />
+                        {/* Sticky Wrapper */}
+                        <div className="sticky top-0 z-30 bg-transparent">
+                            <PilotDuty
+                                pilots={displayedData?.pilots}
+                                isStuck={isSticky}
+                                onRefresh={handleManualRefresh}
+                                loading={isLoading}
+                                timeLeft={timeLeft}
+                            />
+                            <div className={`${isSticky ? 'bg-blue-600 shadow-md rounded-b-xl -mx-4 px-4 pb-2 pt-0' : 'mb-2'} transition-all duration-300`}>
+                                <FilterBar
+                                    searchTerm={searchTerm}
+                                    setSearchTerm={setSearchTerm}
+                                    filter={statusFilter as FilterType}
+                                    setFilter={(val) => setStatusFilter(val)}
+                                />
+                            </div>
+                        </div>
+
+                        <ShipList
+                            groupedShips={groupedShips}
+                            loading={isLoading && !displayedData}
+                            isEmpty={!filteredShips || filteredShips.length === 0}
+                        />
+                    </>
+                )}
             </div>
 
             {/* Scroll to Top Button */}

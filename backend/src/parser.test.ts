@@ -1,14 +1,28 @@
 import { describe, it, expect } from 'vitest';
 import { parsePilotData } from './parser';
+import { sampleHtml } from '../test/fixtures/sample';
 
 describe('parsePilotData', () => {
+	it('should parse real-world HTML fixture correctly', () => {
+		const result = parsePilotData(sampleHtml);
+
+		expect(result).toBeDefined();
+		expect(result.ships.length).toBeGreaterThan(0);
+
+		// Check first ship structure (sanity check)
+		const firstShip = result.ships[0];
+		expect(firstShip.name).toBe('BBC ELISABETH');
+		expect(firstShip.pilot).toBe('CS');
+		expect(firstShip.sections).toEqual(['E12', 'IPA']);
+	});
+
 	it('should parse valid HTML correctly', () => {
 		const mockHtml = `
 			<html>
 				<body>
 					<table>
 						<tr><td>2025-11-28 금요일</td></tr>
-						<tr><td>일출: 07:00</td></tr>
+						<tr><td>일출: 07:00 일몰: 18:00</td></tr>
 					</table>
 					<table>
 						<thead>

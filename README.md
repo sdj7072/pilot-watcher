@@ -125,6 +125,13 @@ Once started, you can access the application at:
 ### Backend (Cloudflare Workers)
 - **Deploy Command**: `npm run deploy`
 
+### Verification
+To verify the parser against live data:
+```bash
+cd backend
+npm run verify
+```
+
 <br/>
 
 ## 📝 License

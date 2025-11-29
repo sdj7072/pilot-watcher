@@ -6,68 +6,71 @@ export interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const corsHeaders = {
-			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
-			"Content-Type": "application/json; charset=utf-8",
-			"Cache-Control": "public, max-age=60",
-		};
-
-		if (request.method === "OPTIONS") {
-			return new Response(null, { headers: corsHeaders });
-		}
-
-		const cacheKey = "pilot-data-v3";
 		const url = new URL(request.url);
-		const isRefresh = url.searchParams.get('refresh');
 
-		let cachedData: PilotData | null = null;
-
-		// 1. Try to get cached data first (Stale-while-revalidate)
-		try {
-			const rawCache = await env.PILOT_KV.get(cacheKey);
-			if (rawCache) {
-				cachedData = JSON.parse(rawCache);
-			}
-		} catch (e) {
-			console.error("Cache read error:", e);
-		}
-
-		if (!isRefresh && cachedData) {
-			return new Response(JSON.stringify(cachedData), { headers: corsHeaders });
-		}
-
-		try {
-			// 2. Fetch from Source
-			const targetUrl = 'http://www.ptpilot.co.kr/forecast/1';
-			const response = await fetch(targetUrl);
-
-			if (!response.ok) throw new Error(`Source responded with ${response.status}`);
-
-			const html = await response.text();
-
-			// 3. Parse HTML & Validate (using extracted logic)
-			const validatedResult = parsePilotData(html);
-
-			// 4. Update Cache
-			if (env.PILOT_KV) {
-				await env.PILOT_KV.put(cacheKey, JSON.stringify(validatedResult), { expirationTtl: 600 });
-			}
-
-			return new Response(JSON.stringify(validatedResult), { headers: corsHeaders });
-
-		} catch (error: any) {
-			console.error("Fetch/Parse Error:", error);
-
-			if (cachedData) {
-				const staleHeaders = { ...corsHeaders, "X-Pilot-Data-Stale": "true" };
-				return new Response(JSON.stringify(cachedData), { headers: staleHeaders });
-			}
-
-			return new Response(JSON.stringify({ error: error.message, stack: error.stack }), {
-				status: 500,
-				headers: corsHeaders
+		// 1. Handle CORS Preflight
+		if (request.method === "OPTIONS") {
+			return new Response(null, {
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					"Access-Control-Allow-Methods": "GET, OPTIONS",
+					"Access-Control-Allow-Headers": "Content-Type",
+				},
 			});
 		}
+
+		// 2. Cache Handling
+		const cache = caches.default;
+		let response = await cache.match(request);
+
+		if (!response) {
+			console.log("Cache miss. Fetching from origin...");
+			try {
+				// 3. Fetch Data
+				const targetUrl = "http://ptpilot.co.kr/forecast/1";
+				const originResponse = await fetch(targetUrl, {
+					headers: {
+						"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+					}
+				});
+
+				if (!originResponse.ok) {
+					throw new Error(`Failed to fetch: ${originResponse.status}`);
+				}
+
+				// Use text() to respect the Content-Type header (UTF-8)
+				// If the server claims UTF-8, we should trust it first.
+				const html = await originResponse.text();
+
+				// 4. Parse Data
+				const data = parsePilotData(html);
+
+				// 5. Create Response
+				response = new Response(JSON.stringify(data), {
+					headers: {
+						"Content-Type": "application/json; charset=utf-8",
+						"Access-Control-Allow-Origin": "*",
+						"Cache-Control": "public, max-age=60, s-maxage=60", // Cache for 60s
+					},
+				});
+
+				// 6. Save to Cache
+				ctx.waitUntil(cache.put(request, response.clone()));
+
+			} catch (error) {
+				console.error("Error fetching data:", error);
+				return new Response(JSON.stringify({ error: "Failed to fetch data", details: String(error) }), {
+					status: 500,
+					headers: {
+						"Content-Type": "application/json",
+						"Access-Control-Allow-Origin": "*",
+					},
+				});
+			}
+		} else {
+			console.log("Cache hit!");
+		}
+
+		return response;
 	},
 };

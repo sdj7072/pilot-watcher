@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.2.0] - 2025-11-29
+
+### Verification Workflow
+- **Live Verification**:
+    - Added `backend/scripts/verify-live.ts` to fetch and parse live data from `ptpilot.co.kr`.
+    - Added `npm run verify` command to backend package.json.
+    - Enables easy verification of parser integrity against real-time data.
+
+## [3.1.1] - 2025-11-29
+
+### Parsing Logic Fixes
+- **Data Accuracy**:
+    - **Encoding**: Fixed broken Korean characters and numbers by respecting server's UTF-8 Content-Type (removed forced EUC-KR decoding).
+    - **Sun Info**: Fixed missing sunrise/sunset times by improving selector logic to find "일출" and "일몰" text robustly.
+    - **Column Mapping**: Fixed Gangchwi/CallSign mismatch by implementing robust `colspan` handling for irregular table headers.
+
+## [3.1.0] - 2025-11-29
+
+### Stability & UX Improvements
+- **Backend Stability**:
+    - **Fixture Tests**: Added real-world HTML fixture (`sample.ts`) and regression tests to protect against parser breakage.
+    - **Caching**: Implemented Cloudflare Cache API to cache responses for 60 seconds, reducing upstream load.
+- **User Experience**:
+    - **Error Handling**: Added a dedicated Error State UI with a "Retry" button for failed data loads.
+
 ## [3.0.0] - 2025-11-29
 
 ### Major UI Redesign & Refactoring

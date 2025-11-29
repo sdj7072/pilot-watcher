@@ -54,7 +54,15 @@ export const parsePilotData = (html: string): PilotData => {
     });
 
     // (2) Sun Info
-    const sunInfo = cleanText($('td:contains("일출")').text()) || "정보 없음";
+    // Use a more robust selector and text cleaning
+    let sunInfo = "정보 없음";
+    $('td').each((i, el) => {
+        const text = cleanText($(el).text());
+        if (text.includes("일출") && text.includes("일몰")) {
+            sunInfo = text;
+            return false; // break
+        }
+    });
 
     // (3) Pilots
     const pilots: string[] = [];
@@ -110,7 +118,8 @@ export const parsePilotData = (html: string): PilotData => {
         let headerRow = $(table).find('thead tr').first();
         if (headerRow.length === 0) {
             $(table).find('tr').each((j, row) => {
-                if ($(row).text().includes("도선사") && $(row).text().includes("선명")) {
+                const rowText = $(row).text();
+                if (rowText.includes("도선사") && rowText.includes("선명") && rowText.includes("호출")) {
                     headerRow = $(row);
                     return false; // break
                 }
@@ -129,16 +138,23 @@ export const parsePilotData = (html: string): PilotData => {
                 if (text.includes("시간")) colMap.time = currentColIndex;
                 if (text.includes("긴특")) colMap.kind = currentColIndex;
                 if (text.includes("선명")) colMap.name = currentColIndex;
-                // Section usually has colspan=2, so we map section1 to start, section2 to start+1
+
                 if (text.includes("도선구간")) {
                     colMap.section1 = currentColIndex;
                     colMap.section2 = currentColIndex + 1;
                 }
-                if (text.includes("Side")) colMap.side = currentColIndex; // Assuming Side is explicitly named or we rely on default if not found
+
+                if (text.includes("Side") || text.includes("접안")) {
+                    // "접안" might appear twice (Berth vs Side), need careful check.
+                    // In sample: "도선구간" -> "Side"(th) or "접안"(td)? 
+                    // Sample header: ... 도선구간 Side 톤수 홀수 대리점 접안 예선 강취 호출
+                    if (text.toLowerCase().includes("side")) colMap.side = currentColIndex;
+                    else if (text === "접안") colMap.berth = currentColIndex;
+                }
+
                 if (text.includes("톤수")) colMap.tonnage = currentColIndex;
                 if (text.includes("홀수")) colMap.draft = currentColIndex;
                 if (text.includes("대리점")) colMap.agency = currentColIndex;
-                if (text.includes("접안")) colMap.berth = currentColIndex;
                 if (text.includes("예선")) colMap.tug = currentColIndex;
                 if (text.includes("강취")) colMap.gangchwi = currentColIndex;
                 if (text.includes("호출")) colMap.callSign = currentColIndex;
