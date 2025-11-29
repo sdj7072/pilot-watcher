@@ -72,6 +72,7 @@ This application retrieves real-time pilot data from:
 
 - **frontend/**: React application. Handles UI, state management, and data visualization.
 - **backend/**: Cloudflare Workers script. Handles data fetching, HTML parsing, and API responses.
+- **packages/shared/**: Shared TypeScript definitions used by both frontend and backend.
 
 <br/>
 

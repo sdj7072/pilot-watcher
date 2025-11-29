@@ -1,5 +1,31 @@
 # Changelog
 
+## [3.0.0] - 2025-11-29
+
+### Major UI Redesign & Refactoring
+- **UI/UX Overhaul**:
+    - **Card Redesign**: Completely revamped `ShipCard` with a cleaner, more organized layout.
+        - **Expanded View**: New grid-based layout for detailed information (Berth, Draft, Tonnage, etc.) with clear icons.
+        - **Pilotage Sections**: Enhanced readability with bold text, red highlighting for critical stations (IPA, JANG), and arrow indicators.
+        - **Status Badges**: Refined colors and typography for better visual distinction.
+    - **Mobile Optimization**: Adjusted header font size for better fit on small screens.
+    - **Animations**: Added smooth expand/collapse animations for ship details.
+- **Architecture & Code Quality**:
+    - **Shared Types**: Introduced a `packages/shared` workspace to share TypeScript definitions between Frontend and Backend.
+    - **Refactoring**:
+        - Extracted `getPilotType` logic to `frontend/src/utils/pilotUtils.ts`.
+        - Extracted HTML parsing logic to `backend/src/parser.ts`.
+    - **Testing**:
+        - Added comprehensive unit tests for `pilotUtils` (Frontend) and `parser` (Backend) using Vitest.
+- **Logic Enhancements**:
+    - **Pilotage Classification**: Improved logic to correctly classify "Arrival" (입항), "Departure" (출항), "Shift" (이항) based on specific section codes (e.g., E14, E16).
+    - **Time-Based Dark Mode**: Implemented automatic theme switching based on time (17:30 - 07:00).
+    - **Data Parsing**: Fixed missing data issues for Tug, Gangchwi, and CallSign by implementing robust `colspan` handling in the backend parser.
+- **Visual Polish**:
+    - **Badge Visibility**: Updated pilotage type badges to use solid colors for better contrast.
+    - **Expanded View**: Improved text contrast for labels in the expanded ship details view.
+    - **Typography**: Adjusted font sizes for badges to match section text.
+
 ## [2.4.0] - 2025-11-29
 
 ### Data Accuracy & UI Refinements

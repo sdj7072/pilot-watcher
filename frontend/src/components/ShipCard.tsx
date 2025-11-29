@@ -15,6 +15,18 @@ export default function ShipCard({ ship }: ShipCardProps) {
 
   const pilotType = getPilotType(ship.sections);
 
+  // Override pilotType colors for better visibility
+  const getPilotTypeColor = (type: string) => {
+    switch (type) {
+      case '투묘': return 'bg-purple-500 text-white dark:bg-purple-600';
+      case '양묘': return 'bg-indigo-500 text-white dark:bg-indigo-600';
+      case '입항': return 'bg-blue-500 text-white dark:bg-blue-600';
+      case '출항': return 'bg-orange-500 text-white dark:bg-orange-600';
+      case '이항': return 'bg-emerald-500 text-white dark:bg-emerald-600';
+      default: return 'bg-gray-500 text-white';
+    }
+  };
+
   return (
     <div className={`rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow ${isDarkMode ? 'bg-[#1e293b] border-slate-800' : 'bg-white border-gray-100'}`}>
       <div className="flex justify-between items-start mb-2">
@@ -48,8 +60,8 @@ export default function ShipCard({ ship }: ShipCardProps) {
 
           <div className="flex items-center gap-2">
             {pilotType && (
-              <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold ${pilotType.color}`}>
-                <pilotType.icon size={10} />
+              <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-bold shadow-sm ${getPilotTypeColor(pilotType.type)}`}>
+                <pilotType.icon size={12} />
                 {pilotType.type}
               </div>
             )}
@@ -60,8 +72,8 @@ export default function ShipCard({ ship }: ShipCardProps) {
                   <React.Fragment key={i}>
                     {i > 0 && <ArrowRight size={12} className={`${isDarkMode ? 'text-slate-500' : 'text-gray-400'}`} />}
                     <span className={`text-xs font-bold ${isPilotStation
-                        ? 'text-red-600 dark:text-red-400'
-                        : (isDarkMode ? 'text-slate-300' : 'text-gray-700')
+                      ? 'text-red-600 dark:text-red-400'
+                      : (isDarkMode ? 'text-slate-300' : 'text-gray-700')
                       }`}>
                       {sec}
                     </span>
@@ -93,44 +105,44 @@ export default function ShipCard({ ship }: ShipCardProps) {
           <div className={`mt-3 rounded-lg border grid grid-cols-2 gap-px overflow-hidden ${isDarkMode ? 'bg-slate-700 border-slate-700' : 'bg-gray-200 border-gray-200'}`}>
             {/* Row 1: Berth | Draft */}
             <div className={`flex justify-between items-center p-3 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-              <span className={`text-xs flex items-center gap-1.5 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              <span className={`text-xs flex items-center gap-1.5 font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
                 <Anchor size={13} /> 접안
               </span>
-              <span className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>{ship.berth || '-'}</span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>{ship.berth || '-'}</span>
             </div>
             <div className={`flex justify-between items-center p-3 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-              <span className={`text-xs flex items-center gap-1.5 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              <span className={`text-xs flex items-center gap-1.5 font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
                 <Ruler size={13} /> 홀수
               </span>
-              <span className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>{ship.draft ? `${ship.draft} m` : '-'}</span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>{ship.draft ? `${ship.draft} m` : '-'}</span>
             </div>
 
             {/* Row 2: Tonnage | Tug */}
             <div className={`flex justify-between items-center p-3 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-              <span className={`text-xs flex items-center gap-1.5 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              <span className={`text-xs flex items-center gap-1.5 font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
                 <Scale size={13} /> 톤수
               </span>
-              <span className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>{ship.tonnage ? `${Number(ship.tonnage.replace(/,/g, '')).toLocaleString()} GT` : '-'}</span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>{ship.tonnage ? `${Number(ship.tonnage.replace(/,/g, '')).toLocaleString()} GT` : '-'}</span>
             </div>
             <div className={`flex justify-between items-center p-3 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-              <span className={`text-xs flex items-center gap-1.5 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              <span className={`text-xs flex items-center gap-1.5 font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
                 <Navigation size={13} /> 예선
               </span>
-              <span className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>{ship.tug || '-'}</span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>{ship.tug || '-'}</span>
             </div>
 
             {/* Row 3: Gang-chwi | Call Sign */}
             <div className={`flex justify-between items-center p-3 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-              <span className={`text-xs flex items-center gap-1.5 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              <span className={`text-xs flex items-center gap-1.5 font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
                 <Wind size={13} /> 강취
               </span>
-              <span className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>{ship.gangchwi || '-'}</span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>{ship.gangchwi || '-'}</span>
             </div>
             <div className={`flex justify-between items-center p-3 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
-              <span className={`text-xs flex items-center gap-1.5 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
+              <span className={`text-xs flex items-center gap-1.5 font-medium ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>
                 <Radio size={13} /> 호출부호
               </span>
-              <span className={`text-xs ${isDarkMode ? 'text-slate-300' : 'text-gray-600'}`}>{ship.callSign || '-'}</span>
+              <span className={`text-xs ${isDarkMode ? 'text-slate-200' : 'text-gray-700'}`}>{ship.callSign || '-'}</span>
             </div>
           </div>
         </div>

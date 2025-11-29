@@ -118,21 +118,32 @@ export const parsePilotData = (html: string): PilotData => {
         }
 
         if (headerRow.length > 0) {
+            let currentColIndex = 0;
             headerRow.find('th, td').each((idx, cell) => {
                 const text = cleanText($(cell).text());
-                if (text.includes("상태")) colMap.status = idx;
-                if (text.includes("도선사")) colMap.pilot = idx;
-                if (text.includes("일자")) colMap.date = idx;
-                if (text.includes("시간")) colMap.time = idx;
-                if (text.includes("긴특")) colMap.kind = idx;
-                if (text.includes("선명")) colMap.name = idx;
-                if (text.includes("대리점")) {
-                    colMap.agency = idx + 1; // Adjust for colspan
+                const colspan = parseInt($(cell).attr('colspan') || '1', 10);
+
+                if (text.includes("상태")) colMap.status = currentColIndex;
+                if (text.includes("도선사")) colMap.pilot = currentColIndex;
+                if (text.includes("일자")) colMap.date = currentColIndex;
+                if (text.includes("시간")) colMap.time = currentColIndex;
+                if (text.includes("긴특")) colMap.kind = currentColIndex;
+                if (text.includes("선명")) colMap.name = currentColIndex;
+                // Section usually has colspan=2, so we map section1 to start, section2 to start+1
+                if (text.includes("도선구간")) {
+                    colMap.section1 = currentColIndex;
+                    colMap.section2 = currentColIndex + 1;
                 }
-                if (text.includes("접안")) colMap.berth = idx + 1;
-                if (text.includes("예선")) colMap.tug = idx + 1;
-                if (text.includes("강취")) colMap.gangchwi = idx + 1;
-                if (text.includes("호출")) colMap.callSign = idx + 1;
+                if (text.includes("Side")) colMap.side = currentColIndex; // Assuming Side is explicitly named or we rely on default if not found
+                if (text.includes("톤수")) colMap.tonnage = currentColIndex;
+                if (text.includes("홀수")) colMap.draft = currentColIndex;
+                if (text.includes("대리점")) colMap.agency = currentColIndex;
+                if (text.includes("접안")) colMap.berth = currentColIndex;
+                if (text.includes("예선")) colMap.tug = currentColIndex;
+                if (text.includes("강취")) colMap.gangchwi = currentColIndex;
+                if (text.includes("호출")) colMap.callSign = currentColIndex;
+
+                currentColIndex += colspan;
             });
         }
     });

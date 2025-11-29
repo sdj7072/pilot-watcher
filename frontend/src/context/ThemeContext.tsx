@@ -16,9 +16,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
                 if (saved) return saved === 'dark';
             } catch (e) { /* ignore */ }
 
-            // 2. Check Time (18:00 ~ 06:00 -> Dark Mode)
-            const hour = new Date().getHours();
-            if (hour >= 18 || hour < 6) {
+            // 2. Check Time (17:30 ~ 07:00 -> Dark Mode)
+            const now = new Date();
+            const minutes = now.getHours() * 60 + now.getMinutes();
+            // 17:30 = 1050 minutes, 07:00 = 420 minutes
+            if (minutes >= 1050 || minutes < 420) {
                 return true;
             }
         }
@@ -30,16 +32,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const root = window.document.documentElement;
         if (isDarkMode) {
             root.classList.add('dark');
-            try { localStorage.setItem('theme', 'dark'); } catch (e) { /* ignore */ }
         } else {
             root.classList.remove('dark');
-            try { localStorage.setItem('theme', 'light'); } catch (e) { /* ignore */ }
         }
     }, [isDarkMode]);
 
     const toggleTheme = () => {
-        console.log("Toggling theme. Current:", isDarkMode ? "Dark" : "Light");
-        setIsDarkMode(!isDarkMode);
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+        try {
+            localStorage.setItem('theme', newMode ? 'dark' : 'light');
+        } catch (e) { /* ignore */ }
     };
 
     return (
