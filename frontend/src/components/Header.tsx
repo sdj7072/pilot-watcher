@@ -31,9 +31,9 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
         <div className={`text-white p-6 rounded-b-3xl shadow-xl relative z-10 transition-colors duration-300 ${isDarkMode ? 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]' : 'bg-gradient-to-br from-blue-600 to-blue-800'}`}>
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <Ship size={28} />
-                        평택항 도선 현황
+                    <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
+                        <Ship size={24} className="md:w-7 md:h-7" />
+                        평택·당진항 도선 현황
                     </h1>
                     <p className="text-blue-100 text-sm opacity-90 font-medium mt-1">
                         {formatDate(data?.dateInfo)}
