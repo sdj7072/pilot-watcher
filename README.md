@@ -18,6 +18,12 @@
 
 <br/>
 
+## 📊 Data Source
+This application retrieves real-time pilot data from:
+**[http://ptpilot.co.kr/forecast/1](http://ptpilot.co.kr/forecast/1)**
+
+<br/>
+
 ## 🔗 Live Demo
 ### 👉 [https://pilot-watcher.pages.dev](https://pilot-watcher.pages.dev)
 

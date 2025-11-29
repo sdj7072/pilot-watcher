@@ -19,6 +19,11 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
                 ? 'bg-red-900/30 text-red-400 border-red-800'
                 : 'bg-red-50 text-red-600 border-red-100';
         }
+        if (status === '요청') {
+            return isDarkMode
+                ? 'bg-orange-900/30 text-orange-400 border-orange-800'
+                : 'bg-orange-50 text-orange-600 border-orange-100';
+        }
         if (status.includes('예정')) {
             return isDarkMode
                 ? 'bg-blue-900/30 text-blue-400 border-blue-800'

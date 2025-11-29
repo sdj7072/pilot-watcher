@@ -1,5 +1,6 @@
 import React from 'react';
 import { Ship, Sun, Moon, RefreshCw } from 'lucide-react';
+import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
 import { PilotData } from '../types';
 
@@ -32,7 +33,7 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
                 <div>
                     <h1 className="text-2xl font-bold flex items-center gap-2">
                         <Ship size={28} />
-                        도선 예보 현황
+                        평택항 도선 현황
                     </h1>
                     <p className="text-blue-100 text-sm opacity-90 font-medium mt-1">
                         {formatDate(data?.dateInfo)}
@@ -49,18 +50,18 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
                     <button
                         onClick={onRefresh}
                         disabled={loading}
-                        className={`p-2.5 rounded-full active:scale-95 transition backdrop-blur-sm flex items-center gap-2 ${loading ? 'bg-blue-500/50 cursor-not-allowed' : 'bg-white/10 hover:bg-white/20'}`}
+                        className={`rounded-full active:scale-95 transition backdrop-blur-sm flex items-center justify-center ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-white/10'}`}
                         aria-label="Refresh Data"
                     >
-                        <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
-                        <span className="text-xs tabular-nums font-medium opacity-80 w-[32px] text-center">
-                            {loading ? "..." : (
-                                <>
-                                    {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
-                                    {(timeLeft % 60).toString().padStart(2, '0')}
-                                </>
-                            )}
-                        </span>
+                        <CircularTimer
+                            timeLeft={timeLeft}
+                            maxTime={60}
+                            size={40}
+                            strokeWidth={3}
+                            className="text-white"
+                        >
+                            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
+                        </CircularTimer>
                     </button>
                 </div>
             </div>

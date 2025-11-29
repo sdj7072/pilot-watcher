@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0] - 2025-11-29
+
+### Data Accuracy & UI Refinements
+- **Data Integrity**:
+    - **Ship Details**: Corrected the display of Tonnage and Draft by fixing column index mapping in the backend.
+    - **Section Codes**: Resolved an issue where row numbers were incorrectly displayed as section codes. Ship cards now show valid section codes (e.g., "E12", "IPA").
+- **UI Improvements**:
+    - **Typography**: Updated visual hierarchy - Ship names are now **Bold**, and Agency names are Medium.
+    - **Status Badges**: Introduced a distinct **Orange** color for 'Request' (요청) status for better visibility.
+    - **Search Bar**: Enhanced contrast for the search icon and border in Dark Mode.
+- **Local Development**:
+    - **Connectivity**: Fixed local data fetching issues by enforcing IPv4 (`127.0.0.1`) connections.
+    - **Stability**: Resolved backend syntax errors to ensure reliable server startup.
+
 ## [2.3.0] - 2025-11-28
 
 ### Advanced Optimizations

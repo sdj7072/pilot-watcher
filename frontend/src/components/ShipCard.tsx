@@ -56,10 +56,10 @@ export default function ShipCard({ ship }: ShipCardProps) {
       <div className={`flex justify-between items-end text-sm border-t pt-3 mt-2 ${isDarkMode ? 'border-slate-800' : 'border-gray-50'}`}>
         <div className="flex flex-col gap-0.5">
           <span className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-            {ship.type}
+            {ship.tonnage ? `${Number(ship.tonnage.replace(/,/g, '')).toLocaleString()} GT` : '-'} | {ship.draft ? `${ship.draft} m` : '-'}
           </span>
         </div>
-        <div className={`font-bold ${isDarkMode ? 'text-slate-100' : 'text-gray-800'}`}>
+        <div className={`font-medium ${isDarkMode ? 'text-slate-100' : 'text-gray-800'}`}>
           {ship.agency}
         </div>
       </div>

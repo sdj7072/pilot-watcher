@@ -1,5 +1,6 @@
 import React from 'react';
 import { Anchor, Sun, Moon, RefreshCw } from 'lucide-react';
+import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
 
 interface PilotDutyProps {
@@ -39,18 +40,18 @@ export default function PilotDuty({ pilots, isStuck = false, onRefresh, loading 
                         <button
                             onClick={onRefresh}
                             disabled={loading}
-                            className={`p-1.5 rounded-full active:scale-95 transition backdrop-blur-sm flex items-center gap-1.5 text-white ${loading ? 'bg-blue-500/50 cursor-not-allowed' : 'bg-white/10 hover:bg-white/20'}`}
+                            className={`rounded-full active:scale-95 transition backdrop-blur-sm flex items-center justify-center ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-white/10'}`}
                             aria-label="Refresh Data"
                         >
-                            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-                            <span className="text-xs tabular-nums font-medium opacity-90 w-[40px] text-center">
-                                {loading ? "..." : (
-                                    <>
-                                        {Math.floor(timeLeft / 60).toString().padStart(2, '0')}:
-                                        {(timeLeft % 60).toString().padStart(2, '0')}
-                                    </>
-                                )}
-                            </span>
+                            <CircularTimer
+                                timeLeft={timeLeft}
+                                maxTime={60}
+                                size={32}
+                                strokeWidth={3}
+                                className="text-white"
+                            >
+                                <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                            </CircularTimer>
                         </button>
                     )}
                 </div>

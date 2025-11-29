@@ -4,22 +4,31 @@ import PilotDuty from './components/PilotDuty';
 import FilterBar from './components/FilterBar';
 import ShipList from './components/ShipList';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import { FilterType } from './types';
+import { FilterType, PilotData } from './types';
 import { usePilotData } from './hooks/usePilotData';
 import { useShipFilter } from './hooks/useShipFilter';
 import { Toaster, toast } from 'sonner';
-
 function AppContent() {
-    const { data, isLoading, isError, mutate } = usePilotData();
-    const { searchTerm, setSearchTerm, statusFilter, setStatusFilter, filteredShips } = useShipFilter(data?.ships);
+    const { data: fetchedData, isLoading, isError, mutate, isValidating } = usePilotData();
+    const [displayedData, setDisplayedData] = useState<PilotData | null>(null);
+    const { searchTerm, setSearchTerm, statusFilter, setStatusFilter, filteredShips } = useShipFilter(displayedData?.ships);
+
+    // Always sync displayedData with fetchedData immediately
+    useEffect(() => {
+        if (fetchedData) {
+            setDisplayedData(fetchedData);
+        }
+    }, [fetchedData]);
 
     // SWR handles auto-refresh, but we still need a countdown timer for UI
     const [timeLeft, setTimeLeft] = useState(60);
 
-    // Reset timer when data updates
+    // Reset timer when validation finishes (fix for bug #3)
     useEffect(() => {
-        setTimeLeft(60);
-    }, [data]);
+        if (!isValidating) {
+            setTimeLeft(60);
+        }
+    }, [isValidating]);
 
     // Countdown logic
     useEffect(() => {
@@ -43,7 +52,10 @@ function AppContent() {
     }, [isError, mutate]);
 
     const handleManualRefresh = () => {
-        mutate().then(() => {
+        mutate().then((newData) => {
+            if (newData) {
+                setDisplayedData(newData);
+            }
             toast.success('데이터가 갱신되었습니다.', { duration: 2000 });
         });
         setTimeLeft(60);
@@ -100,13 +112,13 @@ function AppContent() {
             <Toaster position="top-center" richColors closeButton />
 
             <Header
-                data={data || null}
+                data={displayedData || null}
                 loading={isLoading}
                 onRefresh={handleManualRefresh}
                 timeLeft={timeLeft}
             />
 
-            <div className={`max-w-md mx-auto px-4 -mt-6 relative z-0 transition-opacity duration-300 ${isLoading && !data ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+            <div className={`max-w-md mx-auto px-4 -mt-6 relative z-0 transition-opacity duration-300 ${isLoading && !displayedData ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
 
                 {/* Sentinel for Sticky Detection - Placed at the top of content to trigger exactly when it hits viewport top */}
                 <div ref={sentinelRef} className="absolute top-0 h-px w-full pointer-events-none bg-transparent" />
@@ -114,7 +126,7 @@ function AppContent() {
                 {/* Sticky Wrapper */}
                 <div className="sticky top-0 z-30 bg-transparent">
                     <PilotDuty
-                        pilots={data?.pilots}
+                        pilots={displayedData?.pilots}
                         isStuck={isSticky}
                         onRefresh={handleManualRefresh}
                         loading={isLoading}
@@ -132,7 +144,7 @@ function AppContent() {
 
                 <ShipList
                     groupedShips={groupedShips}
-                    loading={isLoading && !data}
+                    loading={isLoading && !displayedData}
                     isEmpty={!filteredShips || filteredShips.length === 0}
                 />
             </div>

@@ -5,10 +5,11 @@ export interface Ship {
     status: string;
     pilot: string;
     sections: string[];
-    type: string; // tonnage
+    tonnage: string; // tonnage
     kind: string;
     side: string;
     agency: string;
+    draft: string;
     link?: string;
     imo?: string;
 }
