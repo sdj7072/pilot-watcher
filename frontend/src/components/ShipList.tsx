@@ -51,7 +51,7 @@ export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }
             {groupedShips && Object.keys(groupedShips).sort().map((date) => (
                 <div key={date}>
                     <div
-                        className="sticky z-10 py-3 -mx-4 px-5 flex items-center gap-2 transition-all duration-300"
+                        className="sticky z-10 pt-5 pb-2 -mx-4 px-5 flex items-center gap-2 transition-all duration-300"
                         style={{
                             backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
                             top: `calc(env(safe-area-inset-top) + 108px)`

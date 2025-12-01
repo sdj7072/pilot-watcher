@@ -3,6 +3,7 @@
 html,
 body {
     width: 100%;
+    touch-action: pan-y;
 }
 
 /* Dark Mode Overrides (Antigravity Theme) */

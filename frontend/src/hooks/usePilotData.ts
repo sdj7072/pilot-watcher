@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { useState, useEffect } from 'react';
 import { PilotData } from '../types';
 
 const fetcher = async (url: string) => {
@@ -13,7 +14,15 @@ const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://1
 console.log('Current API URL:', API_URL); // Debug log
 
 export function usePilotData() {
-    const { data, error, isLoading, mutate, isValidating } = useSWR<PilotData>(API_URL, fetcher, {
+    // Add a small delay to prevent "Socket is not connected" error on app launch
+    const [isReady, setIsReady] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsReady(true), 500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const { data, error, isLoading, mutate, isValidating } = useSWR<PilotData>(isReady ? API_URL : null, fetcher, {
         refreshInterval: 60000, // Auto refresh every 60s
         revalidateOnFocus: true,
         revalidateOnReconnect: true,
