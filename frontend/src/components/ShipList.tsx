@@ -41,7 +41,7 @@ export default function ShipList({ groupedShips, loading, isEmpty }: ShipListPro
                     <div
                         className="sticky top-[115px] z-10 py-3 -mx-4 px-5 flex items-center gap-2 transition-colors duration-300"
                         style={{ backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}
-                        onClick={(_e) => { /* TODO: Add functionality here if needed */ }}
+                        onClick={() => { /* TODO: Add functionality here if needed */ }}
                     >
                         <Calendar size={14} className="text-gray-400 dark:text-gray-500" />
                         <h3 className="text-sm font-bold text-gray-500 dark:text-gray-400">
@@ -54,7 +54,7 @@ export default function ShipList({ groupedShips, loading, isEmpty }: ShipListPro
                                     const days = ['일', '월', '화', '수', '목', '금', '토'];
                                     const dayName = days[dateObj.getDay()];
                                     return `${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')}(${dayName})`;
-                                } catch (e) {
+                                } catch {
                                     return date;
                                 }
                             })()}

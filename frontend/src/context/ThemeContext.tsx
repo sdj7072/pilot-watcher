@@ -14,7 +14,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             try {
                 const saved = localStorage.getItem('theme');
                 if (saved) return saved === 'dark';
-            } catch (e) { /* ignore */ }
+            } catch { /* ignore */ }
 
             // 2. Check Time (17:30 ~ 07:00 -> Dark Mode)
             const now = new Date();
@@ -30,7 +30,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        const handleChange = (_e: MediaQueryListEvent) => {
+        const handleChange = () => {
             if (!localStorage.getItem('theme')) {
                 setIsDarkMode(mediaQuery.matches);
             }
@@ -49,12 +49,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     }, [isDarkMode]);
 
-    const toggleTheme = (_e?: React.MouseEvent) => {
+    const toggleTheme = () => {
         const newMode = !isDarkMode;
         setIsDarkMode(newMode);
         try {
             localStorage.setItem('theme', newMode ? 'dark' : 'light');
-        } catch (e) { /* ignore */ }
+        } catch { /* ignore */ }
     };
 
     return (

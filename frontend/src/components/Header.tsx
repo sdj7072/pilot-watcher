@@ -22,7 +22,7 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
             const formattedDate = datePart.replace(/-/g, '.');
             const shortDay = dayPart ? `(${dayPart[0]})` : '';
             return `${formattedDate}${shortDay}`;
-        } catch (e) {
+        } catch {
             return dateStr;
         }
     };
@@ -41,14 +41,14 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
                 </div>
                 <div className="flex gap-2">
                     <button
-                        onClick={toggleTheme}
+                        onClick={() => toggleTheme()}
                         className="p-2.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
                         aria-label="Toggle Dark Mode"
                     >
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
                     <button
-                        onClick={(_e) => onRefresh()}
+                        onClick={() => onRefresh()}
                         disabled={loading}
                         className={`rounded-full active:scale-95 transition backdrop-blur-sm flex items-center justify-center ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-white/10'}`}
                         aria-label="Refresh Data"

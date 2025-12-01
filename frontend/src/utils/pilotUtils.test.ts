@@ -18,7 +18,7 @@ describe('getPilotType', () => {
     });
 
     it('should identify Arrival (입항)', () => {
-        const result = getPilotType(['IPA', 'E12']); // IPA is not Sea in list? Wait, IPA is Pilot Station. 
+        getPilotType(['IPA', 'E12']); // IPA is not Sea in list? Wait, IPA is Pilot Station. 
         // Let's check the list in pilotUtils.ts: ['P.S', 'E12', 'E-12', 'E14', 'E-14', 'E16', 'E-16', 'NO.1', 'NO.2']
         // IPA is NOT in the list. 
         // If IPA is not in list, then isSea('IPA') is false.

@@ -11,7 +11,7 @@ interface PilotDutyProps {
     timeLeft?: number;
 }
 
-export default function PilotDuty({ pilots: _pilots, isStuck, onRefresh, loading, timeLeft }: PilotDutyProps) {
+export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft }: PilotDutyProps) {
     const { isDarkMode, toggleTheme } = useTheme();
 
     return (

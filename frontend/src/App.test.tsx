@@ -4,12 +4,12 @@ import App from './App';
 
 // Mock the custom hooks
 vi.mock('./hooks/usePilotData', () => ({
-    usePilotData: () => ({
+    usePilotData: vi.fn(() => ({
         data: null,
         isLoading: true,
         isError: null,
         mutate: vi.fn(),
-    }),
+    })),
 }));
 
 vi.mock('./hooks/useShipFilter', () => ({
@@ -34,7 +34,7 @@ class MockIntersectionObserver {
     unobserve() { return null; }
     disconnect() { return null; }
 }
-window.IntersectionObserver = MockIntersectionObserver as any;
+window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 
 // Mock scrollTo
 window.scrollTo = vi.fn();

@@ -11,11 +11,8 @@ interface FilterBarProps {
 }
 
 export default function FilterBar(props: FilterBarProps) {
-    const { searchTerm, setSearchTerm, filter: _filter, setFilter: _setFilter } = props;
+    const { searchTerm, setSearchTerm } = props;
     const { isDarkMode } = useTheme();
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _filters: { label: string; value: FilterType; color: string }[] = ['ALL', 'ING', 'DONE'];
 
     return (
         <div className="pt-2 pb-2 transition-colors duration-300">
