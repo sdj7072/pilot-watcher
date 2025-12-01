@@ -29,6 +29,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     });
 
     useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleChange = (_e: MediaQueryListEvent) => {
+            if (!localStorage.getItem('theme')) {
+                setIsDarkMode(mediaQuery.matches);
+            }
+        };
+
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
+    }, []);
+
+    useEffect(() => {
         const root = window.document.documentElement;
         if (isDarkMode) {
             root.classList.add('dark');
@@ -37,7 +49,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     }, [isDarkMode]);
 
-    const toggleTheme = () => {
+    const toggleTheme = (_e?: React.MouseEvent) => {
         const newMode = !isDarkMode;
         setIsDarkMode(newMode);
         try {

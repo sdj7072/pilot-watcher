@@ -48,7 +48,7 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
                     <button
-                        onClick={onRefresh}
+                        onClick={(_e) => onRefresh()}
                         disabled={loading}
                         className={`rounded-full active:scale-95 transition backdrop-blur-sm flex items-center justify-center ${loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-white/10'}`}
                         aria-label="Refresh Data"

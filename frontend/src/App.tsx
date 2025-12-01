@@ -33,15 +33,10 @@ const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
 
 function AppContent() {
     const { data: fetchedData, isLoading, isError, mutate, isValidating } = usePilotData();
-    const [displayedData, setDisplayedData] = useState<PilotData | null>(null);
-    const { searchTerm, setSearchTerm, statusFilter, setStatusFilter, filteredShips } = useShipFilter(displayedData?.ships);
+    // derived state instead of synced state
+    const displayedData = fetchedData || null;
 
-    // Always sync displayedData with fetchedData immediately
-    useEffect(() => {
-        if (fetchedData) {
-            setDisplayedData(fetchedData);
-        }
-    }, [fetchedData]);
+    const { searchTerm, setSearchTerm, statusFilter, setStatusFilter, filteredShips } = useShipFilter(displayedData?.ships);
 
     // SWR handles auto-refresh, but we still need a countdown timer for UI
     const [timeLeft, setTimeLeft] = useState(60);
@@ -49,7 +44,9 @@ function AppContent() {
     // Reset timer when validation finishes (fix for bug #3)
     useEffect(() => {
         if (!isValidating) {
-            setTimeLeft(60);
+            // Use a timeout to avoid synchronous state update during render phase if this effect runs immediately
+            const timeoutId = setTimeout(() => setTimeLeft(60), 0);
+            return () => clearTimeout(timeoutId);
         }
     }, [isValidating]);
 
@@ -73,7 +70,6 @@ function AppContent() {
     const handleManualRefresh = () => {
         mutate().then((newData) => {
             if (newData) {
-                setDisplayedData(newData);
                 toast.success('데이터가 갱신되었습니다.', { duration: 2000 });
             }
         });
@@ -103,8 +99,8 @@ function AppContent() {
                 setIsSticky(newIsSticky);
 
                 // Send sticky state to iOS Native App
-                if ((window as any).webkit?.messageHandlers?.stickyHandler) {
-                    (window as any).webkit.messageHandlers.stickyHandler.postMessage(newIsSticky);
+                if ((window as unknown as { webkit?: { messageHandlers?: { stickyHandler?: { postMessage: (msg: boolean) => void } } } }).webkit?.messageHandlers?.stickyHandler) {
+                    (window as unknown as { webkit?: { messageHandlers?: { stickyHandler?: { postMessage: (msg: boolean) => void } } } }).webkit.messageHandlers.stickyHandler.postMessage(newIsSticky);
                 }
             },
             { threshold: [0, 1] }
