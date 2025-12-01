@@ -44,7 +44,8 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
                 <div className="flex gap-2">
                     <button
                         onClick={() => toggleTheme()}
-                        className="p-2.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
+                        className="shrink-0 flex items-center justify-center bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
+                        style={{ width: 40, height: 40, minWidth: 40, minHeight: 40 }}
                         aria-label="Toggle Dark Mode"
                     >
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}

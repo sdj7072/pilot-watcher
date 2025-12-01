@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html,
+body {
+    width: 100%;
+}
+
 /* Dark Mode Overrides (Antigravity Theme) */
 html.dark body {
     background-color: #0f172a !important;
