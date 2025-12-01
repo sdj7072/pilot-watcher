@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.pilotwatcher.ios',
-  appName: 'PilotWatcher',
+  appId: 'com.mado.pilotwatcher',
+  appName: 'Pilot Watcher',
   webDir: 'dist',
   plugins: {
     SplashScreen: {

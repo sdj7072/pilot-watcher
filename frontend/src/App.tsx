@@ -14,6 +14,8 @@ import { Toaster, toast } from 'sonner';
 import { StatusBar } from '@capacitor/status-bar';
 
 
+import SettingsModal from './components/SettingsModal';
+
 function AppContent() {
     const { data: fetchedData, isLoading, isError, mutate, isValidating } = usePilotData();
 
@@ -25,6 +27,7 @@ function AppContent() {
     // SWR handles auto-refresh, but we still need a countdown timer for UI
     const [timeLeft, setTimeLeft] = useState(60);
     const [isCoolingDown, setIsCoolingDown] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     // Reset timer when validation finishes (fix for bug #3)
     useEffect(() => {
@@ -164,11 +167,14 @@ function AppContent() {
                 style={{ height: 'env(safe-area-inset-top)' }}
             />
 
+            <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+
             <Header
                 data={displayedData || null}
                 loading={isLoading || isCoolingDown}
                 onRefresh={handleManualRefresh}
                 timeLeft={timeLeft}
+                onOpenSettings={() => setIsSettingsOpen(true)}
             />
 
             <div className={`max-w-md mx-auto px-4 -mt-6 relative z-0 transition-opacity duration-300 ${isLoading && !displayedData ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
@@ -193,6 +199,7 @@ function AppContent() {
                                 onRefresh={handleManualRefresh}
                                 loading={isLoading || isCoolingDown}
                                 timeLeft={timeLeft}
+                                onOpenSettings={() => setIsSettingsOpen(true)}
                             />
                             <div className={`${isSticky ? 'bg-blue-600 shadow-md rounded-b-xl -mx-4 px-4 pb-2 pt-0' : 'mb-2'}`}>
                                 <FilterBar

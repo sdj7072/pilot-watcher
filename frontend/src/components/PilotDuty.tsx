@@ -1,4 +1,4 @@
-import { Anchor, Sun, Moon, RefreshCw } from 'lucide-react';
+import { Anchor, Sun, Moon, RefreshCw, Settings } from 'lucide-react';
 import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
 
@@ -8,9 +8,10 @@ interface PilotDutyProps {
     onRefresh?: () => void;
     loading?: boolean;
     timeLeft?: number;
+    onOpenSettings?: () => void;
 }
 
-export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft }: PilotDutyProps) {
+export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft, onOpenSettings }: PilotDutyProps) {
     const { isDarkMode, toggleTheme } = useTheme();
 
     return (
@@ -28,9 +29,20 @@ export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft }: Pil
 
             {isStuck && (
                 <div className="flex gap-2">
+                    {onOpenSettings && (
+                        <button
+                            onClick={onOpenSettings}
+                            className="p-1.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-white shrink-0 flex items-center justify-center"
+                            style={{ width: 32, height: 32, minWidth: 32, minHeight: 32 }}
+                            aria-label="Open Settings"
+                        >
+                            <Settings size={16} />
+                        </button>
+                    )}
                     <button
                         onClick={toggleTheme}
-                        className="p-1.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-white"
+                        className="p-1.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-white shrink-0 flex items-center justify-center"
+                        style={{ width: 32, height: 32, minWidth: 32, minHeight: 32 }}
                         aria-label="Toggle Dark Mode"
                     >
                         {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}

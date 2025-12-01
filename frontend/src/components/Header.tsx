@@ -1,4 +1,4 @@
-import { Ship, Sun, Moon, RefreshCw } from 'lucide-react';
+import { Ship, Sun, Moon, RefreshCw, Settings } from 'lucide-react';
 import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
 import { PilotData } from '../types';
@@ -8,9 +8,10 @@ interface HeaderProps {
     loading: boolean;
     onRefresh: () => void;
     timeLeft: number;
+    onOpenSettings: () => void;
 }
 
-export default function Header({ data, loading, onRefresh, timeLeft }: HeaderProps) {
+export default function Header({ data, loading, onRefresh, timeLeft, onOpenSettings }: HeaderProps) {
     const { isDarkMode, toggleTheme } = useTheme();
 
     const formatDate = (dateStr: string | undefined) => {
@@ -42,6 +43,14 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
                     </p>
                 </div>
                 <div className="flex gap-2">
+                    <button
+                        onClick={onOpenSettings}
+                        className="shrink-0 flex items-center justify-center bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
+                        style={{ width: 40, height: 40, minWidth: 40, minHeight: 40 }}
+                        aria-label="Open Settings"
+                    >
+                        <Settings size={20} />
+                    </button>
                     <button
                         onClick={() => toggleTheme()}
                         className="shrink-0 flex items-center justify-center bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
