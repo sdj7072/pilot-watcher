@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import ShipCard from './ShipCard';
 import Skeleton from './Skeleton';
@@ -15,6 +16,12 @@ import { SearchX, Anchor } from 'lucide-react';
 
 export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }: ShipListProps) {
     const { isDarkMode } = useTheme();
+
+    const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+
+    const handleCardToggle = (cardId: string) => {
+        setExpandedCardId((prev: string | null) => prev === cardId ? null : cardId);
+    };
 
     if (loading && !groupedShips) {
         return (
@@ -77,9 +84,17 @@ export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }
                         <div className="h-px bg-gray-200 dark:bg-gray-800 flex-1"></div>
                     </div>
                     <div className="space-y-4">
-                        {groupedShips[date].map((ship, idx) => (
-                            <ShipCard key={`${date}-${idx}`} ship={ship} />
-                        ))}
+                        {groupedShips[date].map((ship, idx) => {
+                            const cardId = `${date}-${idx}`;
+                            return (
+                                <ShipCard
+                                    key={cardId}
+                                    ship={ship}
+                                    isExpanded={expandedCardId === cardId}
+                                    onToggle={() => handleCardToggle(cardId)}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
             ))}

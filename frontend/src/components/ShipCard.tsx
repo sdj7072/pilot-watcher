@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react';
+import { Fragment } from 'react';
 import StatusBadge from './StatusBadge';
 import { Ship, ExternalLink, ChevronDown, ChevronUp, User, Anchor, Wind, Radio, Navigation, AlertTriangle, Scale, Ruler, ArrowRight } from 'lucide-react';
 import { Ship as ShipType } from '../types';
@@ -7,11 +7,13 @@ import { getPilotType } from '../utils/pilotUtils';
 
 interface ShipCardProps {
   ship: ShipType;
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
-export default function ShipCard({ ship }: ShipCardProps) {
+export default function ShipCard({ ship, isExpanded, onToggle }: ShipCardProps) {
   const { isDarkMode } = useTheme();
-  const [isExpanded, setIsExpanded] = useState(false);
+  // Local state removed
 
   const pilotType = getPilotType(ship.sections);
 
@@ -150,7 +152,7 @@ export default function ShipCard({ ship }: ShipCardProps) {
 
       {/* Toggle Button */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={onToggle}
         className={`w-full flex items-center justify-center mt-2 pt-1 pb-1 text-xs transition-colors ${isDarkMode ? 'text-slate-400 hover:text-slate-200' : 'text-gray-500 hover:text-gray-800'}`}
         aria-label={isExpanded ? "접기" : "펼치기"}
       >

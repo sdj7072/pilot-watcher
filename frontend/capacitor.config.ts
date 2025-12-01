@@ -4,6 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.mado.pilotwatcher',
   appName: 'Pilot Watcher',
   webDir: 'dist',
+  appendUserAgent: ' PilotWatcher/1.0',
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
