@@ -31,13 +31,13 @@ export default function ShipCard({ ship }: ShipCardProps) {
     <div className={`rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow ${isDarkMode ? 'bg-[#1e293b] border-slate-800' : 'bg-white border-gray-100'}`}>
       <div className="flex justify-between items-start mb-2">
         <div className="flex flex-col">
-          <span className={`text-sm font-bold ${isDarkMode ? 'text-slate-100' : 'text-gray-800'}`}>{ship.time}</span>
+          <span className={`text-sm font-semibold ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>{ship.time}</span>
         </div>
         <StatusBadge status={ship.status} />
       </div>
 
       <div className="mb-3">
-        <h3 className={`text-base font-bold mb-1.5 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+        <h3 className={`text-lg font-bold tracking-tight mb-1.5 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           <a
             href={ship.link || `https://www.vesselfinder.com/vessels?name=${encodeURIComponent(ship.name)}`}
             target="_blank"
@@ -71,8 +71,8 @@ export default function ShipCard({ ship }: ShipCardProps) {
                 return (
                   <Fragment key={i}>
                     {i > 0 && <ArrowRight size={12} className={`${isDarkMode ? 'text-slate-500' : 'text-gray-400'}`} />}
-                    <span className={`text-xs font-bold ${isPilotStation
-                      ? 'text-red-600 dark:text-red-400'
+                    <span className={`text-xs font-medium ${isPilotStation
+                      ? 'text-red-600 dark:text-red-400 font-bold'
                       : (isDarkMode ? 'text-slate-300' : 'text-gray-700')
                       }`}>
                       {sec}
@@ -90,7 +90,7 @@ export default function ShipCard({ ship }: ShipCardProps) {
           {ship.kind && (
             <div className="flex items-center gap-1.5 text-red-500 font-bold">
               <AlertTriangle size={14} className="text-red-500" />
-              <span className="text-xs">{ship.kind}</span>
+              <span className="text-sm">{ship.kind}</span>
             </div>
           )}
         </div>

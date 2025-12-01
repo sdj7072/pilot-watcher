@@ -1,4 +1,4 @@
-import { Calendar, Ship } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import ShipCard from './ShipCard';
 import Skeleton from './Skeleton';
 import { Ship as ShipType } from '../types';
@@ -7,11 +7,13 @@ interface ShipListProps {
     groupedShips: Record<string, ShipType[]> | undefined;
     loading: boolean;
     isEmpty: boolean;
+    isFiltering: boolean;
 }
 
 import { useTheme } from '../context/ThemeContext';
+import { SearchX, Anchor } from 'lucide-react';
 
-export default function ShipList({ groupedShips, loading, isEmpty }: ShipListProps) {
+export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }: ShipListProps) {
     const { isDarkMode } = useTheme();
 
     if (loading && !groupedShips) {
@@ -26,9 +28,20 @@ export default function ShipList({ groupedShips, loading, isEmpty }: ShipListPro
 
     if (isEmpty) {
         return (
-            <div className="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-600">
-                <Ship size={40} className="mb-2 opacity-20" />
-                <p>조건에 맞는 선박이 없습니다.</p>
+            <div className="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-600 animate-in fade-in zoom-in duration-300">
+                {isFiltering ? (
+                    <>
+                        <SearchX size={48} className="mb-3 opacity-20" />
+                        <p className="font-medium">검색 결과가 없습니다.</p>
+                        <p className="text-xs mt-1 opacity-70">다른 검색어나 필터로 시도해 보세요.</p>
+                    </>
+                ) : (
+                    <>
+                        <Anchor size={48} className="mb-3 opacity-20" />
+                        <p className="font-medium">예정된 도선 작업이 없습니다.</p>
+                        <p className="text-xs mt-1 opacity-70">새로운 정보가 업데이트되면 알려드릴게요.</p>
+                    </>
+                )}
             </div>
         );
     }
@@ -60,7 +73,7 @@ export default function ShipList({ groupedShips, loading, isEmpty }: ShipListPro
                         </h3>
                         <div className="h-px bg-gray-200 dark:bg-gray-800 flex-1"></div>
                     </div>
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                         {groupedShips[date].map((ship, idx) => (
                             <ShipCard key={`${date}-${idx}`} ship={ship} />
                         ))}

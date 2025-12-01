@@ -1,15 +1,36 @@
 import useSWR from 'swr';
 import { PilotData } from '../types';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+    const res = await fetch(url);
+    if (!res.ok) {
+        throw new Error(`Network response was not ok: ${res.status}`);
+    }
+    return res.json();
+};
 
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:8787' : 'https://backend.pilot-watcher.workers.dev');
+console.log('Current API URL:', API_URL); // Debug log
 
 export function usePilotData() {
     const { data, error, isLoading, mutate, isValidating } = useSWR<PilotData>(API_URL, fetcher, {
         refreshInterval: 60000, // Auto refresh every 60s
         revalidateOnFocus: true,
+        revalidateOnReconnect: true,
         shouldRetryOnError: true,
+        errorRetryInterval: 3000, // Initial retry after 3s
+        errorRetryCount: 10,      // Retry up to 10 times before pausing (optional, but good for safety)
+        onErrorRetry: (_error, _key, _config, revalidate, { retryCount }) => {
+            // Never give up, but cap the backoff
+            // Default SWR behavior is exponential. We want to cap it.
+
+            // 404 is usually permanent, but for this app it might mean "no data yet" or server issue, so we retry.
+            // if (error.status === 404) return;
+
+            // Cap retry delay at 5 seconds
+            const delay = Math.min(retryCount * 1000, 5000);
+            setTimeout(() => revalidate({ retryCount }), delay);
+        }
     });
 
     return {
