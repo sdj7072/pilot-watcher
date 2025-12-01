@@ -15,7 +15,7 @@ export default function Header({ data, loading, onRefresh, timeLeft }: HeaderPro
     const { isDarkMode, toggleTheme } = useTheme();
 
     const formatDate = (dateStr: string | undefined) => {
-        if (!dateStr) return "데이터 로딩 중...";
+        if (!dateStr) return "정보를 읽어오는 중...";
         // "2025-11-28 금요일" -> "2025.11.28(금)"
         try {
             const [datePart, dayPart] = dateStr.split(' ');

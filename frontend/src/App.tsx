@@ -15,7 +15,7 @@ const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
         <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-full mb-4 shadow-sm">
             <AlertCircle className="w-12 h-12 text-red-500 dark:text-red-400" />
         </div>
-        <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             데이터를 불러오지 못했습니다
         </h3>
         <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-xs leading-relaxed">
@@ -99,7 +99,13 @@ function AppContent() {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 // sentinel이 화면 상단 밖으로 나가면 sticky 상태
-                setIsSticky(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+                const newIsSticky = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+                setIsSticky(newIsSticky);
+
+                // Send sticky state to iOS Native App
+                if ((window as any).webkit?.messageHandlers?.stickyHandler) {
+                    (window as any).webkit.messageHandlers.stickyHandler.postMessage(newIsSticky);
+                }
             },
             { threshold: [0, 1] }
         );
