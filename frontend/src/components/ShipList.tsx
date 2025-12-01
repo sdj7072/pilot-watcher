@@ -20,7 +20,21 @@ export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }
     const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
     const handleCardToggle = (cardId: string) => {
+        const isOpening = expandedCardId !== cardId;
         setExpandedCardId((prev: string | null) => prev === cardId ? null : cardId);
+
+        if (isOpening) {
+            // Wait for state update and DOM render
+            setTimeout(() => {
+                const element = document.getElementById(`card-${cardId}`);
+                if (element) {
+                    element.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, 100);
+        }
     };
 
     if (loading && !groupedShips) {
@@ -87,12 +101,17 @@ export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }
                         {groupedShips[date].map((ship, idx) => {
                             const cardId = `${date}-${idx}`;
                             return (
-                                <ShipCard
+                                <div
                                     key={cardId}
-                                    ship={ship}
-                                    isExpanded={expandedCardId === cardId}
-                                    onToggle={() => handleCardToggle(cardId)}
-                                />
+                                    id={`card-${cardId}`}
+                                    style={{ scrollMarginTop: 'calc(env(safe-area-inset-top) + 160px)' }}
+                                >
+                                    <ShipCard
+                                        ship={ship}
+                                        isExpanded={expandedCardId === cardId}
+                                        onToggle={() => handleCardToggle(cardId)}
+                                    />
+                                </div>
                             );
                         })}
                     </div>
