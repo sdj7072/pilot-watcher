@@ -101,7 +101,6 @@ function AppContent() {
     const sentinelRef = useRef<HTMLDivElement>(null);
 
 
-
     useEffect(() => {
         // Enable StatusBar overlay for transparent background effect
         if (Capacitor.isNativePlatform()) {
@@ -195,7 +194,7 @@ function AppContent() {
                                 loading={isLoading || isCoolingDown}
                                 timeLeft={timeLeft}
                             />
-                            <div className={`${isSticky ? 'bg-blue-600 shadow-md rounded-b-xl -mx-4 px-4 pb-2 pt-0' : 'mb-2'} transition-all duration-300`}>
+                            <div className={`${isSticky ? 'bg-blue-600 shadow-md rounded-b-xl -mx-4 px-4 pb-2 pt-0' : 'mb-2'}`}>
                                 <FilterBar
                                     searchTerm={searchTerm}
                                     setSearchTerm={setSearchTerm}

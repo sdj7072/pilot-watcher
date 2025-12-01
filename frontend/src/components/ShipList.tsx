@@ -51,8 +51,11 @@ export default function ShipList({ groupedShips, loading, isEmpty, isFiltering }
             {groupedShips && Object.keys(groupedShips).sort().map((date) => (
                 <div key={date}>
                     <div
-                        className="sticky top-[115px] z-10 py-3 -mx-4 px-5 flex items-center gap-2 transition-colors duration-300"
-                        style={{ backgroundColor: isDarkMode ? '#0f172a' : '#ffffff' }}
+                        className="sticky z-10 py-3 -mx-4 px-5 flex items-center gap-2 transition-all duration-300"
+                        style={{
+                            backgroundColor: isDarkMode ? '#0f172a' : '#ffffff',
+                            top: `calc(env(safe-area-inset-top) + 108px)`
+                        }}
                         onClick={() => { /* TODO: Add functionality here if needed */ }}
                     >
                         <Calendar size={14} className="text-gray-400 dark:text-gray-500" />
