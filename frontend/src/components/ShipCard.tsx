@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState, Fragment } from 'react';
 import StatusBadge from './StatusBadge';
-import { Ship, ExternalLink, ChevronDown, ChevronUp, User, Anchor, Wind, Radio, Hash, Navigation, LogIn, LogOut, RefreshCw, ArrowUpCircle, AlertTriangle, Scale, Ruler, ArrowRight } from 'lucide-react';
+import { Ship, ExternalLink, ChevronDown, ChevronUp, User, Anchor, Wind, Radio, Navigation, AlertTriangle, Scale, Ruler, ArrowRight } from 'lucide-react';
 import { Ship as ShipType } from '../types';
 import { useTheme } from '../context/ThemeContext';
 import { getPilotType } from '../utils/pilotUtils';
@@ -69,7 +69,7 @@ export default function ShipCard({ ship }: ShipCardProps) {
               {ship.sections && ship.sections.map((sec, i) => {
                 const isPilotStation = ['IPA', 'JANG'].some(station => sec.includes(station));
                 return (
-                  <React.Fragment key={i}>
+                  <Fragment key={i}>
                     {i > 0 && <ArrowRight size={12} className={`${isDarkMode ? 'text-slate-500' : 'text-gray-400'}`} />}
                     <span className={`text-xs font-bold ${isPilotStation
                       ? 'text-red-600 dark:text-red-400'
@@ -77,7 +77,7 @@ export default function ShipCard({ ship }: ShipCardProps) {
                       }`}>
                       {sec}
                     </span>
-                  </React.Fragment>
+                  </Fragment>
                 );
               })}
             </div>

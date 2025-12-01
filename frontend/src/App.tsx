@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import PilotDuty from './components/PilotDuty';
 import FilterBar from './components/FilterBar';
 import ShipList from './components/ShipList';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import { FilterType, PilotData } from './types';
+import { FilterType } from './types';
 import { usePilotData } from './hooks/usePilotData';
 import { useShipFilter } from './hooks/useShipFilter';
 import { Toaster, toast } from 'sonner';
@@ -99,8 +99,9 @@ function AppContent() {
                 setIsSticky(newIsSticky);
 
                 // Send sticky state to iOS Native App
-                if ((window as unknown as { webkit?: { messageHandlers?: { stickyHandler?: { postMessage: (msg: boolean) => void } } } }).webkit?.messageHandlers?.stickyHandler) {
-                    (window as unknown as { webkit?: { messageHandlers?: { stickyHandler?: { postMessage: (msg: boolean) => void } } } }).webkit.messageHandlers.stickyHandler.postMessage(newIsSticky);
+                const webkit = (window as unknown as { webkit?: { messageHandlers?: { stickyHandler?: { postMessage: (msg: boolean) => void } } } }).webkit;
+                if (webkit?.messageHandlers?.stickyHandler) {
+                    webkit.messageHandlers.stickyHandler.postMessage(newIsSticky);
                 }
             },
             { threshold: [0, 1] }
@@ -134,6 +135,12 @@ function AppContent() {
         <div className={`min-h-screen pb-10 select-none font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-white'}`}>
             {/* Toaster for Notifications */}
             <Toaster position="top-center" richColors closeButton />
+
+            {/* Status Bar Background Cover */}
+            <div
+                className={`fixed top-0 left-0 right-0 z-[60] transition-colors duration-300 ${isSticky ? 'bg-blue-600' : 'bg-transparent'}`}
+                style={{ height: 'env(safe-area-inset-top)' }}
+            />
 
             <Header
                 data={displayedData || null}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Ship, Sun, Moon, RefreshCw } from 'lucide-react';
 import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';

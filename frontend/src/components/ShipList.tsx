@@ -1,4 +1,3 @@
-import React from 'react';
 import { Calendar, Ship } from 'lucide-react';
 import ShipCard from './ShipCard';
 import Skeleton from './Skeleton';

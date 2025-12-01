@@ -1,4 +1,3 @@
-import React from 'react';
 import { Anchor, Sun, Moon, RefreshCw } from 'lucide-react';
 import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
@@ -44,7 +43,7 @@ export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft }: Pil
                             aria-label="Refresh Data"
                         >
                             <CircularTimer
-                                timeLeft={timeLeft}
+                                timeLeft={timeLeft || 0}
                                 maxTime={60}
                                 size={32}
                                 strokeWidth={3}

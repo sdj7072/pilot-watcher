@@ -1,4 +1,3 @@
-import React from 'react';
 import { Search } from 'lucide-react';
 import { FilterType } from '../types';
 import { useTheme } from '../context/ThemeContext';
