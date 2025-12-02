@@ -30,7 +30,7 @@ const AdMobBanner = () => {
                     adSize: BannerAdSize.BANNER,
                     position: BannerAdPosition.BOTTOM_CENTER,
                     margin: 0,
-                    isTesting: true // Set to true for test ads
+                    isTesting: false // Set to true for test ads
                 };
 
                 const loadHandle = await AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
