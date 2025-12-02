@@ -4,10 +4,38 @@ export interface Env {
 	PILOT_KV: KVNamespace;
 }
 
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const url = new URL(request.url);
+// Helper function to fetch from origin, parse, and store in KV
+async function fetchAndCacheData(env: Env): Promise<any> {
+	console.log("Fetching from origin...");
+	const targetUrl = "http://ptpilot.co.kr/forecast/1";
+	const originResponse = await fetch(targetUrl, {
+		headers: {
+			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+		}
+	});
 
+	if (!originResponse.ok) {
+		throw new Error(`Failed to fetch: ${originResponse.status}`);
+	}
+
+	const html = await originResponse.text();
+	const data = parsePilotData(html);
+
+	// Store in KV
+	await env.PILOT_KV.put("LATEST_DATA", JSON.stringify(data));
+	console.log("Data cached in KV");
+
+	return data;
+}
+
+export default {
+	// Cron Trigger Handler
+	async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+		ctx.waitUntil(fetchAndCacheData(env));
+	},
+
+	// HTTP Request Handler
+	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		// 1. Handle CORS Preflight
 		if (request.method === "OPTIONS") {
 			return new Response(null, {
@@ -19,31 +47,22 @@ export default {
 			});
 		}
 
-		// 2. Cache Handling
+		// 2. Cache Handling (Edge Cache)
 		const cache = caches.default;
 		let response = await cache.match(request);
 
 		if (!response) {
-			console.log("Cache miss. Fetching from origin...");
 			try {
-				// 3. Fetch Data
-				const targetUrl = "http://ptpilot.co.kr/forecast/1";
-				const originResponse = await fetch(targetUrl, {
-					headers: {
-						"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-					}
-				});
+				// 3. Try to get from KV first
+				let data = await env.PILOT_KV.get("LATEST_DATA", "json");
 
-				if (!originResponse.ok) {
-					throw new Error(`Failed to fetch: ${originResponse.status}`);
+				// 4. Fallback: If KV is empty (first run), fetch from origin
+				if (!data) {
+					console.log("KV miss. Fetching from origin...");
+					data = await fetchAndCacheData(env);
+				} else {
+					console.log("KV hit!");
 				}
-
-				// Use text() to respect the Content-Type header (UTF-8)
-				// If the server claims UTF-8, we should trust it first.
-				const html = await originResponse.text();
-
-				// 4. Parse Data
-				const data = parsePilotData(html);
 
 				// 5. Create Response
 				response = new Response(JSON.stringify(data), {
@@ -54,7 +73,7 @@ export default {
 					},
 				});
 
-				// 6. Save to Cache
+				// 6. Save to Edge Cache
 				ctx.waitUntil(cache.put(request, response.clone()));
 
 			} catch (error) {
@@ -68,7 +87,7 @@ export default {
 				});
 			}
 		} else {
-			console.log("Cache hit!");
+			console.log("Edge Cache hit!");
 		}
 
 		return response;

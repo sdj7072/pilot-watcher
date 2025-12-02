@@ -14,11 +14,12 @@ const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://1
 console.log('Current API URL:', API_URL); // Debug log
 
 export function usePilotData() {
-    // Add a small delay to prevent "Socket is not connected" error on app launch
+    // Add a delay to prevent "Socket is not connected" error on app launch
+    // Increased to 1500ms to be safe
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsReady(true), 500);
+        const timer = setTimeout(() => setIsReady(true), 1500);
         return () => clearTimeout(timer);
     }, []);
 

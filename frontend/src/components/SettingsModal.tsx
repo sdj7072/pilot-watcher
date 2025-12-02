@@ -2,7 +2,7 @@ import { X, ChevronRight, Shield, Mail, Info, FileText, Settings, ChevronDown } 
 import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
-import LicenseView from './LicenseView'; // Assuming LicenseView is in the same directory or a sub-directory
+import LicenseView from './LicenseView';
 
 interface SettingsModalProps {
     isOpen: boolean;
@@ -12,7 +12,7 @@ interface SettingsModalProps {
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const { isDarkMode } = useTheme();
     const [currentView, setCurrentView] = useState<'main' | 'licenses'>('main');
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(isOpen);
     const touchStartY = useRef<number | null>(null);
 
     useEffect(() => {
