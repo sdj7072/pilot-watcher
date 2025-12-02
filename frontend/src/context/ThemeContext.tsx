@@ -7,8 +7,8 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [isDarkMode, setIsDarkMode] = useState(() => {
+export function ThemeProvider({ children, forcedTheme }: { children: React.ReactNode; forcedTheme?: 'light' | 'dark' }) {
+    const [internalDarkMode, setInternalDarkMode] = useState(() => {
         // 1. Check local storage
         if (typeof window !== 'undefined') {
             try {
@@ -28,17 +28,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         return false;
     });
 
+    const isDarkMode = forcedTheme ? (forcedTheme === 'dark') : internalDarkMode;
+
     useEffect(() => {
+        if (forcedTheme) return;
+
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const handleChange = () => {
             if (!localStorage.getItem('theme')) {
-                setIsDarkMode(mediaQuery.matches);
+                setInternalDarkMode(mediaQuery.matches);
             }
         };
 
         mediaQuery.addEventListener('change', handleChange);
         return () => mediaQuery.removeEventListener('change', handleChange);
-    }, []);
+    }, [forcedTheme]);
 
     useEffect(() => {
         const root = window.document.documentElement;
@@ -50,8 +54,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }, [isDarkMode]);
 
     const toggleTheme = () => {
-        const newMode = !isDarkMode;
-        setIsDarkMode(newMode);
+        if (forcedTheme) return; // Disable toggling if forced
+
+        const newMode = !internalDarkMode;
+        setInternalDarkMode(newMode);
         try {
             localStorage.setItem('theme', newMode ? 'dark' : 'light');
         } catch { /* ignore */ }

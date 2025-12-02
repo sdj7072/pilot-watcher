@@ -252,8 +252,8 @@ export default function App() {
 
     if (path === '/privacy') {
         return (
-            <ThemeProvider>
-                <div className="min-h-screen bg-white dark:bg-slate-800 p-6">
+            <ThemeProvider forcedTheme="light">
+                <div className="min-h-screen bg-white p-6">
                     <PrivacyView />
                 </div>
             </ThemeProvider>
@@ -262,8 +262,8 @@ export default function App() {
 
     if (path === '/terms') {
         return (
-            <ThemeProvider>
-                <div className="min-h-screen bg-white dark:bg-slate-800 p-6">
+            <ThemeProvider forcedTheme="light">
+                <div className="min-h-screen bg-white p-6">
                     <TermsView />
                 </div>
             </ThemeProvider>

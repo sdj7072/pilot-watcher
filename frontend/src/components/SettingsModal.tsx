@@ -3,7 +3,6 @@ import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { ActionSheet, ActionSheetButtonStyle } from '@capacitor/action-sheet';
-import { Browser } from '@capacitor/browser';
 import LicenseView from './LicenseView';
 import PrivacyView from './PrivacyView';
 import TermsView from './TermsView';
@@ -82,7 +81,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         });
 
         if (result.index === 0) {
-            await Browser.open({ url: 'https://pilot-watcher.pages.dev/privacy' });
+            // Open in external browser (Safari)
+            window.open('https://pilot-watcher.pages.dev/privacy', '_system');
         } else if (result.index === 1) {
             setCurrentView('privacy');
         }
@@ -111,7 +111,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         });
 
         if (result.index === 0) {
-            await Browser.open({ url: 'https://pilot-watcher.pages.dev/terms' });
+            // Open in external browser (Safari)
+            window.open('https://pilot-watcher.pages.dev/terms', '_system');
         } else if (result.index === 1) {
             setCurrentView('terms');
         }
