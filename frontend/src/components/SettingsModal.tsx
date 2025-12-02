@@ -90,7 +90,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 `}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                style={{ height: '80vh', maxHeight: '600px' }}
+                style={{ height: '85vh' }}
             >
                 {/* Swipe Indicator (Native Only) */}
                 {Capacitor.isNativePlatform() && (
@@ -162,7 +162,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         ${currentView === 'licenses' ? 'translate-x-0' : 'translate-x-full'}
                     `}
                 >
-                    <LicenseView onBack={() => setCurrentView('main')} />
+                    <LicenseView onBack={() => setCurrentView('main')} onClose={handleClose} />
                 </div>
             </div>
         </div>

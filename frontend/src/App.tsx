@@ -118,11 +118,7 @@ function AppContent() {
                 const newIsSticky = !entry.isIntersecting && entry.boundingClientRect.top < 0;
                 setIsSticky(newIsSticky);
 
-                // Send sticky state to iOS Native App
-                const webkit = (window as unknown as { webkit?: { messageHandlers?: { stickyHandler?: { postMessage: (msg: boolean) => void } } } }).webkit;
-                if (webkit?.messageHandlers?.stickyHandler) {
-                    webkit.messageHandlers.stickyHandler.postMessage(newIsSticky);
-                }
+                // webkit message handler removed to prevent UI freeze
             },
             { threshold: [0, 1] }
         );
@@ -163,19 +159,21 @@ function AppContent() {
 
             {/* Status Bar Background Cover for Sticky State */}
             <div
-                className={`fixed top-0 left-0 right-0 z-[60] transition-colors duration-300 ${isSticky ? 'bg-blue-600' : 'bg-transparent'}`}
+                className={`fixed top-0 left-0 right-0 z-[60] transition-colors duration-300 pointer-events-none ${isSticky ? 'bg-blue-600' : 'bg-transparent'}`}
                 style={{ height: 'env(safe-area-inset-top)' }}
             />
 
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
 
-            <Header
-                data={displayedData || null}
-                loading={isLoading || isCoolingDown}
-                onRefresh={handleManualRefresh}
-                timeLeft={timeLeft}
-                onOpenSettings={() => setIsSettingsOpen(true)}
-            />
+            <div className="relative z-40">
+                <Header
+                    data={displayedData || null}
+                    loading={isLoading || isCoolingDown}
+                    onRefresh={handleManualRefresh}
+                    timeLeft={timeLeft}
+                    onOpenSettings={() => setIsSettingsOpen(true)}
+                />
+            </div>
 
             <div className={`max-w-md mx-auto px-4 -mt-6 relative z-0 transition-opacity duration-300 ${isLoading && !displayedData ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
 
