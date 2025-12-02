@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
+import { SplashScreen } from '@capacitor/splash-screen';
 import Header from './components/Header';
 import AdMobBanner from './components/AdMobBanner';
 import PilotDuty from './components/PilotDuty';
@@ -240,6 +241,12 @@ import PrivacyView from './components/PrivacyView';
 import TermsView from './components/TermsView';
 
 export default function App() {
+    useEffect(() => {
+        if (Capacitor.isNativePlatform()) {
+            SplashScreen.hide();
+        }
+    }, []);
+
     // Simple routing for static pages
     const path = window.location.pathname;
 
@@ -247,7 +254,7 @@ export default function App() {
         return (
             <ThemeProvider>
                 <div className="min-h-screen bg-white dark:bg-slate-800 p-6">
-                    <PrivacyView onBack={() => window.location.href = '/'} />
+                    <PrivacyView />
                 </div>
             </ThemeProvider>
         );
@@ -257,7 +264,7 @@ export default function App() {
         return (
             <ThemeProvider>
                 <div className="min-h-screen bg-white dark:bg-slate-800 p-6">
-                    <TermsView onBack={() => window.location.href = '/'} />
+                    <TermsView />
                 </div>
             </ThemeProvider>
         );

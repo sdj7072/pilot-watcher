@@ -9,8 +9,10 @@ const AdMobBanner = () => {
     const [adLoaded, setAdLoaded] = useState(false);
     const { isDarkMode } = useTheme();
 
+    const showAd = import.meta.env.VITE_SHOW_ADMOB !== 'false';
+
     useEffect(() => {
-        if (!isNative) return;
+        if (!isNative || !showAd) return;
 
         const initializeAdMob = async () => {
             try {
@@ -23,7 +25,7 @@ const AdMobBanner = () => {
                 await AdMob.initialize();
 
                 const options = {
-                    adId: 'ca-app-pub-3940256099942544/2934735716', // Test ID
+                    adId: 'ca-app-pub-4712767609934402/5119071097', // Production ID
                     // adId: 'ca-app-pub-4712767609934402/5119071097', // Production ID
                     adSize: BannerAdSize.BANNER,
                     position: BannerAdPosition.BOTTOM_CENTER,
@@ -32,7 +34,6 @@ const AdMobBanner = () => {
                 };
 
                 const loadHandle = await AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
-                    console.log('AdMob Banner Loaded');
                     setAdLoaded(true);
                 });
 
@@ -58,9 +59,9 @@ const AdMobBanner = () => {
                 AdMob.removeBanner().catch(console.error);
             }
         };
-    }, [isNative]);
+    }, [isNative, showAd]);
 
-    if (!isNative) return null;
+    if (!isNative || !showAd) return null;
 
     return (
         <>

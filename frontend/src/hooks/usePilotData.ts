@@ -11,7 +11,6 @@ const fetcher = async (url: string) => {
 };
 
 const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://127.0.0.1:8787' : 'https://backend.pilot-watcher.workers.dev');
-console.log('Current API URL:', API_URL); // Debug log
 
 export function usePilotData() {
     // Add a delay to prevent "Socket is not connected" error on app launch
