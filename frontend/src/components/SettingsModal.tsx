@@ -1,8 +1,12 @@
-import { X, ChevronRight, Shield, Mail, Info, FileText, Settings, ChevronDown } from 'lucide-react';
+import { X, ChevronRight, Shield, Mail, Info, FileText, Settings, ChevronDown, ExternalLink, Code } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
+import { ActionSheet, ActionSheetButtonStyle } from '@capacitor/action-sheet';
+import { Browser } from '@capacitor/browser';
 import LicenseView from './LicenseView';
+import PrivacyView from './PrivacyView';
+import TermsView from './TermsView';
 
 interface SettingsModalProps {
     isOpen: boolean;
@@ -11,7 +15,7 @@ interface SettingsModalProps {
 
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const { isDarkMode } = useTheme();
-    const [currentView, setCurrentView] = useState<'main' | 'licenses'>('main');
+    const [currentView, setCurrentView] = useState<'main' | 'licenses' | 'privacy' | 'terms'>('main');
     const [isVisible, setIsVisible] = useState(isOpen);
     const touchStartY = useRef<number | null>(null);
 
@@ -55,20 +59,83 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         touchStartY.current = null;
     };
 
+    const handlePrivacy = async () => {
+        if (!Capacitor.isNativePlatform()) {
+            setCurrentView('privacy');
+            return;
+        }
+
+        const result = await ActionSheet.showActions({
+            title: 'Privacy Policy',
+            options: [
+                {
+                    title: 'Open in Safari',
+                },
+                {
+                    title: 'View in App',
+                },
+                {
+                    title: 'Cancel',
+                    style: ActionSheetButtonStyle.Cancel,
+                },
+            ],
+        });
+
+        if (result.index === 0) {
+            await Browser.open({ url: 'https://pilot-watcher.pages.dev/privacy' });
+        } else if (result.index === 1) {
+            setCurrentView('privacy');
+        }
+    };
+
+    const handleTerms = async () => {
+        if (!Capacitor.isNativePlatform()) {
+            setCurrentView('terms');
+            return;
+        }
+
+        const result = await ActionSheet.showActions({
+            title: 'Terms of Service',
+            options: [
+                {
+                    title: 'Open in Safari',
+                },
+                {
+                    title: 'View in App',
+                },
+                {
+                    title: 'Cancel',
+                    style: ActionSheetButtonStyle.Cancel,
+                },
+            ],
+        });
+
+        if (result.index === 0) {
+            await Browser.open({ url: 'https://pilot-watcher.pages.dev/terms' });
+        } else if (result.index === 1) {
+            setCurrentView('terms');
+        }
+    };
+
     const menuItems = [
         {
-            icon: <Shield size={20} />,
-            label: '개인정보 처리방침',
-            onClick: () => window.open('https://www.privacy.go.kr', '_blank'), // TODO: Replace with actual link
+            icon: <Mail size={20} />,
+            label: 'Contact Us',
+            onClick: () => window.location.href = 'mailto:sdj7072@gmail.com?subject=%5BPilot%20Watcher%5D%20%EB%AC%B8%EC%9D%98%ED%95%98%EA%B8%B0',
         },
         {
-            icon: <Mail size={20} />,
-            label: '문의하기',
-            onClick: () => window.location.href = 'mailto:support@pilotwatcher.com',
+            icon: <Shield size={20} />,
+            label: 'Privacy Policy',
+            onClick: handlePrivacy,
         },
         {
             icon: <FileText size={20} />,
-            label: '오픈소스 라이선스',
+            label: 'Terms of Service',
+            onClick: handleTerms,
+        },
+        {
+            icon: <Code size={20} />,
+            label: 'Open Source Licenses',
             onClick: () => setCurrentView('licenses'),
         },
     ];
@@ -144,18 +211,32 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         ))}
                     </div>
 
-                    {/* App Info Footer */}
-                    <div className="mt-8 text-center">
-                        <div className={`flex items-center justify-center gap-2 text-sm font-medium ${isDarkMode ? 'text-slate-500' : 'text-gray-500'}`}>
+                    {/* Data Source Disclaimer */}
+                    <div className={`mt-6 p-4 rounded-xl text-xs leading-relaxed ${isDarkMode ? 'bg-slate-700/30 text-slate-400' : 'bg-gray-50 text-gray-500'}`}>
+                        <div className="flex items-center gap-2 mb-2 font-bold opacity-90">
                             <Info size={14} />
-                            <span>Version 4.0.0</span>
-                            <span className="mx-1 opacity-50">|</span>
-                            <span>© 2025 MADO</span>
+                            <span>정보 출처 안내</span>
+                        </div>
+                        <p className="mb-2">
+                            본 앱에서 제공하는 도선 현황 및 예보 정보는 <a href="http://ptpilot.co.kr" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 underline decoration-1 underline-offset-2 hover:text-blue-500">평택·당진 도선사회<ExternalLink size={10} /></a>의 데이터를 기반으로 하여 사용자 편의를 위해 재가공한 것입니다.
+                        </p>
+                        <p>
+                            표시된 정보는 실제 일정과 상이할 수 있으며, 중요 업무 결정 시에는 반드시 공식 정보를 확인하시기 바랍니다.
+                        </p>
+                    </div>
+
+                    {/* App Info Footer */}
+                    <div className="mt-6 text-center space-y-1">
+                        <div className={`text-sm font-bold ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
+                            Version 4.0.0
+                        </div>
+                        <div className={`text-xs font-medium ${isDarkMode ? 'text-slate-500' : 'text-gray-500'}`}>
+                            © 2025 MADO. All rights reserved.
                         </div>
                     </div>
                 </div>
 
-                {/* License View */}
+                {/* Sub Views */}
                 <div
                     className={`
                         absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit
@@ -163,6 +244,24 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     `}
                 >
                     <LicenseView onBack={() => setCurrentView('main')} onClose={handleClose} />
+                </div>
+
+                <div
+                    className={`
+                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit
+                        ${currentView === 'privacy' ? 'translate-x-0' : 'translate-x-full'}
+                    `}
+                >
+                    <PrivacyView onBack={() => setCurrentView('main')} onClose={handleClose} />
+                </div>
+
+                <div
+                    className={`
+                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit
+                        ${currentView === 'terms' ? 'translate-x-0' : 'translate-x-full'}
+                    `}
+                >
+                    <TermsView onBack={() => setCurrentView('main')} onClose={handleClose} />
                 </div>
             </div>
         </div>

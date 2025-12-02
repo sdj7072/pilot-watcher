@@ -64,7 +64,7 @@ export default function LicenseView({ onBack, onClose }: LicenseViewProps) {
                     >
                         <ChevronLeft size={24} />
                     </button>
-                    <h2 className="text-lg font-bold">오픈소스 라이선스</h2>
+                    <h2 className="text-lg font-bold">Open Source Licenses</h2>
                 </div>
                 {onClose && (
                     <button
