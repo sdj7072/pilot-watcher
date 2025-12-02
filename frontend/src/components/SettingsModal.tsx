@@ -1,4 +1,4 @@
-import { X, ChevronRight, Shield, Mail, Info, FileText, Settings, ChevronDown, ExternalLink, Code } from 'lucide-react';
+import { X, ChevronRight, Shield, Mail, Info, FileText, Settings, ChevronDown, ExternalLink, Code, Sparkles } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useState, useEffect, useRef } from 'react';
 import { Capacitor } from '@capacitor/core';
@@ -120,9 +120,14 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
     const menuItems = [
         {
+            icon: <Sparkles size={20} className="text-blue-500" />,
+            label: 'About',
+            onClick: () => window.open('https://pilot-watcher.pages.dev/about', '_system'),
+        },
+        {
             icon: <Mail size={20} />,
             label: 'Contact Us',
-            onClick: () => window.location.href = 'mailto:sdj7072@gmail.com?subject=%5BPilot%20Watcher%5D%20%EB%AC%B8%EC%9D%98%ED%95%98%EA%B8%B0',
+            onClick: () => window.open('https://pilot-watcher.pages.dev/contact', '_system'),
         },
         {
             icon: <Shield size={20} />,
@@ -158,7 +163,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 `}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
-                style={{ height: '85vh' }}
+                style={{ height: '90vh' }}
             >
                 {/* Swipe Indicator (Native Only) */}
                 {Capacitor.isNativePlatform() && (

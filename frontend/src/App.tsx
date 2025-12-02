@@ -239,6 +239,8 @@ function AppContent() {
 
 import PrivacyView from './components/PrivacyView';
 import TermsView from './components/TermsView';
+import AboutView from './components/AboutView';
+import ContactView from './components/ContactView';
 
 export default function App() {
     useEffect(() => {
@@ -263,8 +265,28 @@ export default function App() {
     if (path === '/terms') {
         return (
             <ThemeProvider forcedTheme="light">
-                <div className="min-h-screen bg-white p-6">
+                <div className="min-h-screen bg-white">
                     <TermsView />
+                </div>
+            </ThemeProvider>
+        );
+    }
+
+    if (path === '/about') {
+        return (
+            <ThemeProvider forcedTheme="light">
+                <div className="min-h-screen bg-white">
+                    <AboutView />
+                </div>
+            </ThemeProvider>
+        );
+    }
+
+    if (path === '/contact') {
+        return (
+            <ThemeProvider forcedTheme="light">
+                <div className="min-h-screen bg-white">
+                    <ContactView />
                 </div>
             </ThemeProvider>
         );
@@ -276,3 +298,4 @@ export default function App() {
         </ThemeProvider>
     );
 }
+
