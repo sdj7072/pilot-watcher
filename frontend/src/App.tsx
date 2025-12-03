@@ -17,7 +17,7 @@ import { StatusBar } from '@capacitor/status-bar';
 
 import SettingsModal from './components/SettingsModal';
 
-function AppContent() {
+function AppContent({ isReady }: { isReady: boolean }) {
     const { data: fetchedData, isLoading, isError, mutate, isValidating } = usePilotData();
 
     // derived state instead of synced state
@@ -106,12 +106,7 @@ function AppContent() {
 
 
     useEffect(() => {
-        // Enable StatusBar overlay for transparent background effect
-        if (Capacitor.isNativePlatform()) {
-            StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {
-                // Ignore errors on web or if plugin not loaded
-            });
-        }
+
 
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -232,7 +227,7 @@ function AppContent() {
             </button>
 
             {/* AdMob Banner (Native Only) */}
-            <AdMobBanner />
+            {isReady && <AdMobBanner />}
         </div>
     );
 }
@@ -243,9 +238,15 @@ import AboutView from './components/AboutView';
 import ContactView from './components/ContactView';
 
 export default function App() {
+    const [isReady, setIsReady] = useState(false);
+
     useEffect(() => {
         if (Capacitor.isNativePlatform()) {
-            SplashScreen.hide();
+            SplashScreen.hide().finally(() => {
+                setIsReady(true);
+            });
+        } else {
+            setTimeout(() => setIsReady(true), 0);
         }
     }, []);
 
@@ -294,7 +295,7 @@ export default function App() {
 
     return (
         <ThemeProvider>
-            <AppContent />
+            <AppContent isReady={isReady} />
         </ThemeProvider>
     );
 }
