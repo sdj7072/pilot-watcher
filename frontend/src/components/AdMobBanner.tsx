@@ -20,6 +20,9 @@ const AdMobBanner = () => {
 
         const initializeAdMob = async () => {
             try {
+                // Wait for a moment to ensure the app is fully active (fixes ATT popup not showing)
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
                 // Request Tracking Authorization (iOS only)
                 const { status } = await AdMob.trackingAuthorizationStatus();
                 if (status === 'notDetermined') {
