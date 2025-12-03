@@ -1,11 +1,11 @@
-import { ChevronLeft, X, Ship, Map, CheckCircle2, Download, Eye, Info, Layers, ExternalLink, Sparkles, Zap, Smartphone, Anchor } from 'lucide-react';
+import { ChevronLeft, X, Ship, Map, CheckCircle2, Download, Info, Layers, ExternalLink, Sparkles, Zap, Smartphone, Anchor } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import AppIcon from '../assets/icon.png';
-import Screen1 from '../assets/screenshots/screen1.png';
-import Screen2 from '../assets/screenshots/screen2.png';
-import Screen3 from '../assets/screenshots/screen3.png';
-import Screen4 from '../assets/screenshots/screen4.png';
-import Screen5 from '../assets/screenshots/screen5.png';
+// import Screen1 from '../assets/screenshots/screen1.png';
+// import Screen2 from '../assets/screenshots/screen2.png';
+// import Screen3 from '../assets/screenshots/screen3.png';
+// import Screen4 from '../assets/screenshots/screen4.png';
+// import Screen5 from '../assets/screenshots/screen5.png';
 
 interface AboutViewProps {
     onBack?: () => void;
@@ -15,7 +15,7 @@ interface AboutViewProps {
 export default function AboutView({ onBack, onClose }: AboutViewProps) {
     const { isDarkMode } = useTheme();
 
-    const screenshots = [Screen1, Screen2, Screen3, Screen4, Screen5];
+    // const screenshots = [Screen1, Screen2, Screen3, Screen4, Screen5];
 
     const usps = [
         {
@@ -85,8 +85,8 @@ export default function AboutView({ onBack, onClose }: AboutViewProps) {
                         평택·당진항 도선 예보 현황을<br />언제 어디서나 한눈에
                     </p>
 
-                    {/* App Store Badge (Coming Soon) */}
-                    <div className={`
+                    {/* App Store Badge (Coming Soon) - Commented out for Android Review */}
+                    {/* <div className={`
                         flex items-center gap-3 px-5 py-2.5 rounded-xl transition-all cursor-not-allowed opacity-90 shadow-lg
                         bg-black text-white border border-white/10
                     `}>
@@ -101,7 +101,7 @@ export default function AboutView({ onBack, onClose }: AboutViewProps) {
                                 App Store
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Description */}
@@ -164,8 +164,8 @@ export default function AboutView({ onBack, onClose }: AboutViewProps) {
                     </div>
                 </div>
 
-                {/* Screenshots Carousel */}
-                <div className={`py-12 ${isDarkMode ? 'bg-slate-800/30' : 'bg-gray-50/50'}`}>
+                {/* Screenshots Carousel - Commented out for Android Review */}
+                {/* <div className={`py-12 ${isDarkMode ? 'bg-slate-800/30' : 'bg-gray-50/50'}`}>
                     <div className="px-6 mb-6 flex items-center gap-2">
                         <Eye className={isDarkMode ? 'text-blue-400' : 'text-blue-600'} size={24} />
                         <div>
@@ -183,7 +183,7 @@ export default function AboutView({ onBack, onClose }: AboutViewProps) {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Trust Indicators */}
                 <div className="px-6 pb-12">
