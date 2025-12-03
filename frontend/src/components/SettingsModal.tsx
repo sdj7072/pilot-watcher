@@ -157,7 +157,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             {/* Modal Content */}
             <div
                 className={`
-                    relative w-full max-w-md rounded-t-2xl sm:rounded-2xl p-6 pb-[6.5rem] shadow-2xl overflow-hidden
+                    relative w-full max-w-md rounded-t-2xl sm:rounded-2xl p-6 pb-[6.5rem] shadow-2xl overflow-hidden isolation-isolate
                     transform transition-all ${isClosing ? 'animate-slide-down' : 'animate-slide-up'}
                     ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'}
                 `}
@@ -175,7 +175,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 {/* Main View */}
                 <div
                     className={`
-                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out
+                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out rounded-t-2xl sm:rounded-2xl overflow-hidden
                         ${currentView === 'main' ? 'translate-x-0' : '-translate-x-full'}
                     `}
                 >
@@ -245,7 +245,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 {/* Sub Views */}
                 <div
                     className={`
-                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit
+                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit rounded-t-2xl sm:rounded-2xl overflow-hidden
                         ${currentView === 'licenses' ? 'translate-x-0' : 'translate-x-full'}
                     `}
                 >
@@ -254,7 +254,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 <div
                     className={`
-                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit
+                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit rounded-t-2xl sm:rounded-2xl overflow-hidden
                         ${currentView === 'privacy' ? 'translate-x-0' : 'translate-x-full'}
                     `}
                 >
@@ -263,7 +263,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 <div
                     className={`
-                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit
+                        absolute inset-0 p-6 pb-[6.5rem] transition-transform duration-300 ease-in-out bg-inherit rounded-t-2xl sm:rounded-2xl overflow-hidden
                         ${currentView === 'terms' ? 'translate-x-0' : 'translate-x-full'}
                     `}
                 >

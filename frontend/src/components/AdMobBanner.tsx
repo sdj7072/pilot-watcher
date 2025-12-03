@@ -11,6 +11,10 @@ const AdMobBanner = () => {
 
     const showAd = import.meta.env.VITE_SHOW_ADMOB !== 'false';
 
+    const isAndroid = Capacitor.getPlatform() === 'android';
+    // Android safe area simulation (approx 20px) since we don't have edge-to-edge
+    const manualSafeArea = isAndroid ? 20 : 0;
+
     useEffect(() => {
         if (!isNative || !showAd) return;
 
@@ -27,9 +31,9 @@ const AdMobBanner = () => {
                 const options = {
                     adId: 'ca-app-pub-4712767609934402/5119071097', // Production ID
                     // adId: 'ca-app-pub-4712767609934402/5119071097', // Production ID
-                    adSize: BannerAdSize.BANNER,
+                    adSize: BannerAdSize.SMART_BANNER,
                     position: BannerAdPosition.BOTTOM_CENTER,
-                    margin: 0,
+                    margin: manualSafeArea,
                     isTesting: false // Set to true for test ads
                 };
 
@@ -59,21 +63,24 @@ const AdMobBanner = () => {
                 AdMob.removeBanner().catch(console.error);
             }
         };
-    }, [isNative, showAd]);
+    }, [isNative, showAd, manualSafeArea]);
 
     if (!isNative || !showAd) return null;
 
     return (
         <>
             {/* Spacer to prevent content from being hidden behind the fixed banner */}
-            <div style={{ height: adLoaded ? 'calc(50px + env(safe-area-inset-bottom))' : '0px', transition: 'height 0.3s' }} />
+            <div style={{
+                height: adLoaded ? `calc(50px + env(safe-area-inset-bottom) + ${manualSafeArea}px)` : '0px',
+                transition: 'height 0.3s'
+            }} />
 
             {/* Fixed Background for AdMob Banner */}
             <div
-                className={`fixed bottom-0 left-0 right-0 z-[50] border-t border-white/10 transition-colors duration-300 ${isDarkMode ? 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]' : 'bg-gradient-to-br from-blue-600 to-blue-800'}`}
+                className={`fixed bottom-0 left-0 right-0 z-[50] border-t transition-colors duration-300 flex justify-center items-start ${isDarkMode ? 'bg-[#0f172a] border-white/10' : 'bg-white border-gray-200'}`}
                 style={{
-                    height: adLoaded ? 'calc(50px + env(safe-area-inset-bottom))' : '0px',
-                    paddingBottom: 'env(safe-area-inset-bottom)',
+                    height: adLoaded ? `calc(50px + env(safe-area-inset-bottom) + ${manualSafeArea}px)` : '0px',
+                    paddingBottom: `calc(env(safe-area-inset-bottom) + ${manualSafeArea}px)`,
                     transition: 'height 0.3s'
                 }}
             />

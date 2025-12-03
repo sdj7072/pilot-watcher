@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">PilotWatcher</string>
-    <string name="title_activity_main">PilotWatcher</string>
+    <string name="app_name">Pilot Watcher</string>
+    <string name="title_activity_main">Pilot Watcher</string>
     <string name="package_name">com.pilotwatcher.app</string>
     <string name="custom_url_scheme">com.pilotwatcher.app</string>
 </resources>

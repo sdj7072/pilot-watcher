@@ -12,7 +12,7 @@ import { FilterType } from './types';
 import { usePilotData } from './hooks/usePilotData';
 import { useShipFilter } from './hooks/useShipFilter';
 import { Toaster, toast } from 'sonner';
-import { StatusBar } from '@capacitor/status-bar';
+
 
 
 import SettingsModal from './components/SettingsModal';
