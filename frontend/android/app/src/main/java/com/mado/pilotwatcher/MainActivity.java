@@ -1,4 +1,4 @@
-package com.pilotwatcher.app;
+package com.mado.pilotwatcher;
 
 import com.getcapacitor.BridgeActivity;
 
