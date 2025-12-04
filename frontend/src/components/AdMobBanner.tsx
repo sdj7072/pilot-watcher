@@ -31,9 +31,12 @@ const AdMobBanner = () => {
 
                 await AdMob.initialize();
 
+                const adId = isAndroid
+                    ? 'ca-app-pub-4712767609934402/1003228503' // Android Production ID
+                    : 'ca-app-pub-4712767609934402/5119071097'; // iOS Production ID
+
                 const options = {
-                    adId: 'ca-app-pub-4712767609934402/5119071097', // Production ID
-                    // adId: 'ca-app-pub-4712767609934402/5119071097', // Production ID
+                    adId: adId,
                     adSize: BannerAdSize.SMART_BANNER,
                     position: BannerAdPosition.BOTTOM_CENTER,
                     margin: manualSafeArea,
