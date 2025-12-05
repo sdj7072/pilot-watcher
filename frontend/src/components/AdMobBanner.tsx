@@ -12,8 +12,11 @@ const AdMobBanner = () => {
     const showAd = import.meta.env.VITE_SHOW_ADMOB !== 'false';
 
     const isAndroid = Capacitor.getPlatform() === 'android';
-    // Android safe area simulation (approx 20px) since we don't have edge-to-edge
-    const manualSafeArea = isAndroid ? 20 : 0;
+
+    // Android: fixed navigation bar height (approx 48px for gesture nav, or navigation buttons)
+    // iOS: uses env(safe-area-inset-bottom) which works correctly
+    const androidNavBarHeight = 48;
+    const androidAdHeight = 50;
 
     useEffect(() => {
         if (!isNative || !showAd) return;
@@ -37,9 +40,10 @@ const AdMobBanner = () => {
 
                 const options = {
                     adId: adId,
-                    adSize: BannerAdSize.SMART_BANNER,
+                    // Use ADAPTIVE_BANNER for Android (centers properly), SMART_BANNER for iOS
+                    adSize: isAndroid ? BannerAdSize.ADAPTIVE_BANNER : BannerAdSize.SMART_BANNER,
                     position: BannerAdPosition.BOTTOM_CENTER,
-                    margin: manualSafeArea,
+                    margin: isAndroid ? androidNavBarHeight : 0,
                     isTesting: false // Set to true for test ads
                 };
 
@@ -69,24 +73,39 @@ const AdMobBanner = () => {
                 AdMob.removeBanner().catch(console.error);
             }
         };
-    }, [isNative, showAd, manualSafeArea]);
+    }, [isNative, showAd, isAndroid, androidNavBarHeight]);
 
     if (!isNative || !showAd) return null;
+
+    // Calculate heights differently for Android vs iOS
+    // Android: env(safe-area-inset-bottom) = 0, so use fixed values
+    // iOS: env(safe-area-inset-bottom) works correctly
+    const spacerHeight = isAndroid
+        ? `${androidAdHeight + androidNavBarHeight}px`
+        : `calc(50px + env(safe-area-inset-bottom))`;
+
+    const backgroundHeight = isAndroid
+        ? `${androidAdHeight + androidNavBarHeight}px`
+        : `calc(50px + env(safe-area-inset-bottom))`;
+
+    const backgroundPaddingBottom = isAndroid
+        ? `${androidNavBarHeight}px`
+        : `env(safe-area-inset-bottom)`;
 
     return (
         <>
             {/* Spacer to prevent content from being hidden behind the fixed banner */}
             <div style={{
-                height: adLoaded ? `calc(50px + env(safe-area-inset-bottom) + ${manualSafeArea}px)` : '0px',
+                height: adLoaded ? spacerHeight : '0px',
                 transition: 'height 0.3s'
             }} />
 
             {/* Fixed Background for AdMob Banner */}
             <div
-                className={`fixed bottom-0 left-0 right-0 z-[50] border-t transition-colors duration-300 flex justify-center items-start ${isDarkMode ? 'bg-[#0f172a] border-white/10' : 'bg-white border-gray-200'}`}
+                className={`fixed bottom-0 left-0 right-0 z-[50] border-t transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a] border-white/10' : 'bg-white border-gray-200'}`}
                 style={{
-                    height: adLoaded ? `calc(50px + env(safe-area-inset-bottom) + ${manualSafeArea}px)` : '0px',
-                    paddingBottom: `calc(env(safe-area-inset-bottom) + ${manualSafeArea}px)`,
+                    height: adLoaded ? backgroundHeight : '0px',
+                    paddingBottom: backgroundPaddingBottom,
                     transition: 'height 0.3s'
                 }}
             />
