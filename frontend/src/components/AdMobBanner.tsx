@@ -102,7 +102,7 @@ const AdMobBanner = () => {
 
             {/* Fixed Background for AdMob Banner */}
             <div
-                className={`fixed bottom-0 left-0 right-0 z-[50] border-t transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a] border-white/10' : 'bg-white border-gray-200'}`}
+                className={`fixed bottom-0 left-0 right-0 z-[50] border-t transition-colors duration-300 flex justify-center ${isDarkMode ? 'bg-[#1e3a5f] border-white/10' : 'bg-blue-100 border-blue-200'}`}
                 style={{
                     height: adLoaded ? backgroundHeight : '0px',
                     paddingBottom: backgroundPaddingBottom,

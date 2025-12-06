@@ -218,7 +218,7 @@ function AppContent({ isReady }: { isReady: boolean }) {
             {/* Scroll to Top Button */}
             <button
                 onClick={scrollToTop}
-                className={`fixed ${Capacitor.isNativePlatform() ? 'bottom-24' : 'bottom-8'} right-6 p-3 rounded-full shadow-lg bg-blue-600 text-white transition-all duration-300 z-[100] hover:bg-blue-700 active:scale-95 ${showScrollTop && !isSettingsOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+                className={`fixed ${Capacitor.isNativePlatform() ? 'bottom-36' : 'bottom-8'} right-6 p-3 rounded-full shadow-lg bg-blue-600 text-white transition-all duration-300 z-[100] hover:bg-blue-700 active:scale-95 ${showScrollTop && !isSettingsOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
                 aria-label="Scroll to top"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
