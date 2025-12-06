@@ -37,9 +37,13 @@ This application retrieves real-time pilot data from:
 
 - **Real-time Monitoring**: Automatically refreshes pilot data every 60 seconds.
 - **Mobile-First Design**: Optimized layout for smartphones with touch-friendly interactions.
+- **Notice System**:
+    - 3-level severity notification (None / Warning / Critical).
+    - Visual indicator: White (no notices), Yellow (has notices), Red (urgent keywords).
+    - Critical keywords highlighted in red within notice content.
 - **Smart Sticky Header**:
     - Unified search bar and "Today's Pilots" summary.
-    - Quick access to **Theme Toggle** and **Manual Refresh** controls.
+    - Quick access to **Notice**, **Theme Toggle**, **Settings**, and **Manual Refresh** controls.
     - Stays accessible while scrolling.
 - **Dark Mode Support**: Seamlessly switches between Light and Dark themes based on system preference or user toggle.
 - **Advanced Filtering**: Filter ships by status (All, In Progress, Completed) and search by ship name or agency.
@@ -47,6 +51,9 @@ This application retrieves real-time pilot data from:
     - Automatic **IMO Number Lookup**.
     - Direct links to **VesselFinder** for detailed ship specifications.
     - Visual indicators for external links.
+- **Mobile App**:
+    - Native **iOS** and **Android** apps built with Capacitor.
+    - Available on App Store and Google Play.
 - **User Experience**:
     - Skeleton loading states for smooth transitions.
     - Clear status badges (Waiting, Onboard, Completed).

@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.1.0] - 2025-12-06
+
+### Notice System
+- **3-Level Severity**:
+    - Default (White icon): No notices available.
+    - Warning (Yellow icon): Has notices but no urgent keywords.
+    - Critical (Red icon): Contains urgent keywords (기상악화, 풍랑도선, 부분운항, 지연운항, 차량탑재제한, 단독운항).
+- **Keyword Highlighting**: Critical keywords are displayed in red bold within the notice modal.
+- **Flexible Matching**: Keywords match regardless of spacing (e.g., "기상 악화" = "기상악화").
+
+### UI Improvements
+- **Header Title**: Changed main header to "평택·당진항".
+- **Sticky Header Title**: Updated to "평택·당진항 도선 현황".
+- **Button Order**: Consistent order across headers [Notice, Theme, Settings, Refresh].
+- **Ship Icon Size**: Slightly increased for better visibility.
+
+### Version Updates
+- iOS: Version 1.1.0, Build 5
+- Android: Version 1.1.0, Build 4
+- Settings Modal: Display version 4.1.0
+
 ## [3.2.0] - 2025-11-29
 
 ### Verification Workflow
