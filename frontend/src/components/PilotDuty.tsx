@@ -1,6 +1,7 @@
-import { Anchor, Sun, Moon, RefreshCw, Settings } from 'lucide-react';
+import { Anchor, Sun, Moon, RefreshCw, Settings, AlertTriangle } from 'lucide-react';
 import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
+import { NoticeSeverity } from './AnnouncementModal';
 
 interface PilotDutyProps {
     pilots: string[] | undefined;
@@ -9,10 +10,21 @@ interface PilotDutyProps {
     loading?: boolean;
     timeLeft?: number;
     onOpenSettings?: () => void;
+    onOpenAnnouncement?: () => void;
+    noticeSeverity?: NoticeSeverity;
 }
 
-export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft, onOpenSettings }: PilotDutyProps) {
+export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft, onOpenSettings, onOpenAnnouncement, noticeSeverity = 'none' }: PilotDutyProps) {
     const { isDarkMode, toggleTheme } = useTheme();
+
+    // Icon color based on severity
+    const getIconColor = () => {
+        switch (noticeSeverity) {
+            case 'critical': return 'text-red-500';
+            case 'warning': return 'text-amber-500';
+            default: return '';
+        }
+    };
 
     return (
         <div className={`transition-all duration-300 ${isStuck
@@ -24,11 +36,32 @@ export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft, onOpe
                 : (isDarkMode ? 'text-blue-400' : 'text-blue-600')
                 }`}>
                 <Anchor size={16} className={isStuck ? "text-blue-200" : ""} />
-                Today's Pilots
+                평택·당진항 도선 현황
             </h2>
 
             {isStuck && (
                 <div className="flex gap-2">
+                    {/* Announcement Button */}
+                    {onOpenAnnouncement && (
+                        <button
+                            onClick={onOpenAnnouncement}
+                            className="p-1.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-white shrink-0 flex items-center justify-center"
+                            style={{ width: 32, height: 32, minWidth: 32, minHeight: 32 }}
+                            aria-label="View Announcements"
+                        >
+                            <AlertTriangle size={16} className={getIconColor()} />
+                        </button>
+                    )}
+                    {/* Theme Toggle Button */}
+                    <button
+                        onClick={toggleTheme}
+                        className="p-1.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-white shrink-0 flex items-center justify-center"
+                        style={{ width: 32, height: 32, minWidth: 32, minHeight: 32 }}
+                        aria-label="Toggle Dark Mode"
+                    >
+                        {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+                    </button>
+                    {/* Settings Button */}
                     {onOpenSettings && (
                         <button
                             onClick={onOpenSettings}
@@ -39,14 +72,7 @@ export default function PilotDuty({ isStuck, onRefresh, loading, timeLeft, onOpe
                             <Settings size={16} />
                         </button>
                     )}
-                    <button
-                        onClick={toggleTheme}
-                        className="p-1.5 bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm text-white shrink-0 flex items-center justify-center"
-                        style={{ width: 32, height: 32, minWidth: 32, minHeight: 32 }}
-                        aria-label="Toggle Dark Mode"
-                    >
-                        {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-                    </button>
+                    {/* Refresh Button */}
                     {onRefresh && (
                         <button
                             onClick={onRefresh}

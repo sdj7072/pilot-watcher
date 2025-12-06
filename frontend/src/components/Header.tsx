@@ -1,7 +1,9 @@
-import { Ship, Sun, Moon, RefreshCw, Settings } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Ship, Sun, Moon, RefreshCw, Settings, AlertTriangle } from 'lucide-react';
 import CircularTimer from './CircularTimer';
 import { useTheme } from '../context/ThemeContext';
 import { PilotData } from '../types';
+import { NoticeSeverity } from './AnnouncementModal';
 
 interface HeaderProps {
     data: PilotData | null;
@@ -9,10 +11,22 @@ interface HeaderProps {
     onRefresh: () => void;
     timeLeft: number;
     onOpenSettings: () => void;
+    onOpenAnnouncement: () => void;
+    noticeSeverity: NoticeSeverity;
 }
 
-export default function Header({ data, loading, onRefresh, timeLeft, onOpenSettings }: HeaderProps) {
+export default function Header({ data, loading, onRefresh, timeLeft, onOpenSettings, onOpenAnnouncement, noticeSeverity }: HeaderProps) {
     const { isDarkMode, toggleTheme } = useTheme();
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const formatDate = (dateStr: string | undefined) => {
         if (!dateStr) return "정보를 읽어오는 중...";
@@ -27,29 +41,40 @@ export default function Header({ data, loading, onRefresh, timeLeft, onOpenSetti
         }
     };
 
+    // Icon color based on severity
+    const getIconColor = () => {
+        switch (noticeSeverity) {
+            case 'critical': return 'text-red-500';
+            case 'warning': return 'text-amber-500';
+            default: return '';
+        }
+    };
+
     return (
         <div
-            className={`text-white px-6 pb-6 rounded-b-3xl shadow-xl relative z-10 transition-colors duration-300 ${isDarkMode ? 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]' : 'bg-gradient-to-br from-blue-600 to-blue-800'}`}
+            className={`text-white px-6 transition-all duration-300 sticky top-0 z-50 shadow-xl ${isScrolled ? 'pb-2' : 'pb-6 rounded-b-3xl'} ${isDarkMode ? 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]' : 'bg-gradient-to-br from-blue-600 to-blue-800'}`}
             style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.5rem)' }}
         >
-            <div className="flex justify-between items-start mb-4">
-                <div>
-                    <h1 className="text-xl md:text-2xl font-bold flex items-center gap-2">
-                        <Ship size={24} className="md:w-7 md:h-7" />
-                        평택·당진항 도선 현황
+            <div className={`flex justify-between items-start transition-all duration-300 ${isScrolled ? 'mb-0 items-center' : 'mb-4'}`}>
+                <div className={`transition-all duration-300 overflow-hidden ${isScrolled ? 'w-0 h-0 opacity-0' : 'w-auto h-auto opacity-100'}`}>
+                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-2 tracking-tight whitespace-nowrap">
+                        <Ship className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
+                        평택·당진항
                     </h1>
-                    <p className="text-blue-100 text-sm opacity-90 font-medium mt-1">
+                    <p className="text-blue-100 text-xs sm:text-sm opacity-90 font-medium mt-1 whitespace-nowrap">
                         {formatDate(data?.dateInfo)}
                     </p>
                 </div>
-                <div className="flex gap-2">
+
+                {/* Buttons Container - Always visible, moves to right on scroll */}
+                <div className={`flex gap-1.5 sm:gap-2 transition-all duration-300 ${isScrolled ? 'ml-auto' : ''}`}>
                     <button
-                        onClick={onOpenSettings}
+                        onClick={onOpenAnnouncement}
                         className="shrink-0 flex items-center justify-center bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
                         style={{ width: 40, height: 40, minWidth: 40, minHeight: 40 }}
-                        aria-label="Open Settings"
+                        aria-label="View Announcements"
                     >
-                        <Settings size={20} />
+                        <AlertTriangle size={20} className={getIconColor()} />
                     </button>
                     <button
                         onClick={() => toggleTheme()}
@@ -58,6 +83,14 @@ export default function Header({ data, loading, onRefresh, timeLeft, onOpenSetti
                         aria-label="Toggle Dark Mode"
                     >
                         {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+                    </button>
+                    <button
+                        onClick={onOpenSettings}
+                        className="shrink-0 flex items-center justify-center bg-white/10 rounded-full hover:bg-white/20 active:scale-95 transition backdrop-blur-sm"
+                        style={{ width: 40, height: 40, minWidth: 40, minHeight: 40 }}
+                        aria-label="Open Settings"
+                    >
+                        <Settings size={20} />
                     </button>
                     <button
                         onClick={() => onRefresh()}
@@ -78,8 +111,8 @@ export default function Header({ data, loading, onRefresh, timeLeft, onOpenSetti
                 </div>
             </div>
 
-            {/* Sun/Moon Info */}
-            <div className="flex flex-col gap-2 text-xs font-semibold bg-black/20 p-3 rounded-xl backdrop-blur-md border border-white/10">
+            {/* Sun/Moon Info - Hide on scroll */}
+            <div className={`flex flex-col gap-2 text-xs font-semibold bg-black/20 p-3 rounded-xl backdrop-blur-md border border-white/10 transition-all duration-300 overflow-hidden ${isScrolled ? 'h-0 opacity-0 p-0 m-0 border-0' : 'h-auto opacity-100'}`}>
                 {/* Row 1: Sunrise / Sunset */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-yellow-300">

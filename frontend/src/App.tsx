@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { SplashScreen } from '@capacitor/splash-screen';
 import Header from './components/Header';
@@ -12,10 +12,8 @@ import { FilterType } from './types';
 import { usePilotData } from './hooks/usePilotData';
 import { useShipFilter } from './hooks/useShipFilter';
 import { Toaster, toast } from 'sonner';
-
-
-
 import SettingsModal from './components/SettingsModal';
+import AnnouncementModal, { extractNotices, getNoticeSeverity } from './components/AnnouncementModal';
 
 function AppContent({ isReady }: { isReady: boolean }) {
     const { data: fetchedData, isLoading, isError, mutate, isValidating } = usePilotData();
@@ -29,6 +27,15 @@ function AppContent({ isReady }: { isReady: boolean }) {
     const [timeLeft, setTimeLeft] = useState(60);
     const [isCoolingDown, setIsCoolingDown] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
+
+    // Extract notices from pilots data
+    const notices = useMemo(() => {
+        return displayedData?.pilots ? extractNotices(displayedData.pilots) : [];
+    }, [displayedData]);
+
+    // Compute notice severity
+    const noticeSeverity = useMemo(() => getNoticeSeverity(notices), [notices]);
 
     // Reset timer when validation finishes (fix for bug #3)
     useEffect(() => {
@@ -160,6 +167,7 @@ function AppContent({ isReady }: { isReady: boolean }) {
             />
 
             <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+            <AnnouncementModal isOpen={isAnnouncementOpen} onClose={() => setIsAnnouncementOpen(false)} notices={notices} />
 
             <div className="relative z-40">
                 <Header
@@ -168,6 +176,8 @@ function AppContent({ isReady }: { isReady: boolean }) {
                     onRefresh={handleManualRefresh}
                     timeLeft={timeLeft}
                     onOpenSettings={() => setIsSettingsOpen(true)}
+                    onOpenAnnouncement={() => setIsAnnouncementOpen(true)}
+                    noticeSeverity={noticeSeverity}
                 />
             </div>
 
@@ -194,6 +204,8 @@ function AppContent({ isReady }: { isReady: boolean }) {
                                 loading={isLoading || isCoolingDown}
                                 timeLeft={timeLeft}
                                 onOpenSettings={() => setIsSettingsOpen(true)}
+                                onOpenAnnouncement={() => setIsAnnouncementOpen(true)}
+                                noticeSeverity={noticeSeverity}
                             />
                             <div className={`${isSticky ? 'bg-blue-600 shadow-md rounded-b-xl -mx-4 px-4 pb-2 pt-0' : 'mb-2'}`}>
                                 <FilterBar

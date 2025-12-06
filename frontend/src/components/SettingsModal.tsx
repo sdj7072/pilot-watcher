@@ -234,7 +234,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {/* App Info Footer */}
                     <div className="mt-6 text-center space-y-1">
                         <div className={`text-sm font-bold ${isDarkMode ? 'text-slate-400' : 'text-gray-600'}`}>
-                            Version 4.0.0
+                            Version 4.1.0
                         </div>
                         <div className={`text-xs font-medium ${isDarkMode ? 'text-slate-500' : 'text-gray-500'}`}>
                             © 2025 MADO. All rights reserved.
