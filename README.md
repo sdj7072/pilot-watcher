@@ -64,7 +64,7 @@ This application retrieves real-time pilot data from:
 ## 🏗 Tech Stack
 
 - **Frontend**:
-    - **Framework**: React 19.2.0
+    - **Framework**: React 19.2.1
     - **Build Tool**: Vite 7.2.4
     - **Styling**: Tailwind CSS 4.1.17
     - **Data Fetching**: SWR 2.3.6

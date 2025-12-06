@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1] - 2025-12-06
+
+### Security
+- **React Update**: Upgraded React from 19.2.0 to 19.2.1 to address CVE-2025-55182 (React2Shell vulnerability).
+    - CVSS Score: 10.0 (Critical)
+    - Affects: React Server Components in React 19.x
+    - Note: This app uses client-side rendering only and was not directly vulnerable, but updated as a precautionary measure.
+
 ## [1.1.0] - 2025-12-06
 
 ### Notice System
