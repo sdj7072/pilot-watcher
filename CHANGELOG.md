@@ -8,6 +8,10 @@
     - Affects: React Server Components in React 19.x
     - Note: This app uses client-side rendering only and was not directly vulnerable, but updated as a precautionary measure.
 
+### Version Updates
+- Android: Version 1.1.1, Build 5
+- Settings Modal: Display version 4.2.0
+
 ## [1.1.0] - 2025-12-06
 
 ### Notice System
